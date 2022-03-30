@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+VER=0.2
+if [ ! -f /opt/sltools/sltools_control.sh ]
+then
+    echo "(Err_014)  slTools à été mal installer. verifier les intructions sur le depot: ' https://github.com/ZarTek-Creole/slTools '."
+    exit 1
+fi
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+
+function ctrl_c() {
+        echo "** CTRL-C ..."
+        sltools_protect=0
+}
+sltools_protect=1
+source /opt/sltools/sltools_control.sh
+
+function banner() {
+    clear
+    print "
+           __                  ▄▄▄▄▄▄▄▄▄▄▄
+          |  \    ▄▄▄▄▄▄▄▄▄▄▄ ▐░░░░░░░░░░░▌
+  _______ | ██   ▐░░░░░░░░░░░▌▐░█▀▀▀▀▀▀▀█░▌ ████▄ █      ▄▄▄▄▄
+ /       \| ██    ▀▀▀▀█░█▀▀▀▀ ▐░▌ ████▄ ▐░▌ █   █ █     █     ▀▄
+|  ██-█▀█▄| ██        ▐░▌     ▐░▌ █   █ ▐░▌ █   █ █   ▄  ▀▀▀▀▄
+ \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ▀████ ███▄ ▀▄▄▄▄▀  
+  \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌       By ZarTeK ▀
+ ___   ▄█▀| ██         ▀      ▐░░░░░░░░░░░▌                 
+ \▄▄▄▄▄_█▀ \██                 ▀▀▀▀▀▀▀▀▀▀▀"                                           
+    echo "Welcome to the slTools v$VER"
+}
+banner
+
+           __ 
+ 
+              
+              
+
+
+sltools_protect=0
