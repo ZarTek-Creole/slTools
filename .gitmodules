@@ -1,0 +1,3 @@
+[submodule "opt/slftp/src"]
+	path = opt/slftp/src
+	url = https://gitlab.com/slftp/slftp.git
