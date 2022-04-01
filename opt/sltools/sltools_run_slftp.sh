@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-[ -z "$sltools_protect" && $sltools_protect != 1] && echo "(Err_003) Reessayer en tapant en consoole : sltools" && exit 1
 if [ $EUID == 1 ] then 
     echo "(Err_012) Ne jamais lancer des application internet sous l'utilisateur ROOT!"
     exit 1

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-[ -z "$sltools_protect" && $sltools_protect != 1] && echo "(Err_003) Reessayer en tapant en consoole : sltools" && exit 1
 slftp_path_run=$slftp_directory/sltools_run_slftp.sh
 if [ ! -f $(echo $slftp_path_run) ]
 then

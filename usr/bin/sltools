@@ -1,40 +1,112 @@
 #!/usr/bin/env bash
 VER=0.2
-if [ ! -f /opt/sltools/sltools_control.sh ]
-then
-    echo "(Err_014)  slTools à été mal installer. verifier les intructions sur le depot: ' https://github.com/ZarTek-Creole/slTools '."
-    exit 1
-fi
+DEBUG=1
+LOG=1
+LOG_FILE="/var/log/sltools.log"
+BINS_NEEDED="echo grep basename cut sha256sum sha1sum md5sum printf tr head tail tar git"
 # trap ctrl-c and call ctrl_c()
 trap ctrl_c INT
 
 function ctrl_c() {
-        echo "** CTRL-C ..."
-        sltools_protect=0
+        echo " ** CTRL-C ..."
+
+        exit 1
 }
-sltools_protect=1
-source /opt/sltools/sltools_control.sh
+
+function msg_sent {
+    echo "[sl-TOOLS] $*"
+}
+function error_sent {
+    printf "[ERROR] $*\n\r";
+    if [ "$LOG" = 1 ]; then echo "[$(date)] [ERROR] $*" >> $LOG_FILE; fi
+    exit 0
+}
+function debug_sent {
+    
+    if [ "$DEBUG" = 1 ]; then echo "[DEBUG] $*"; fi
+    if [ "$LOG" = 1 ]; then echo "[$(date)] [ERROR] $*" >> $LOG_FILE; fi
+}
+function sltools_init() {
+    [ ! -f /etc/slftp/sltools.cfg ] && (error_sent "(Err_004) Le fichier de slTools suivant est manquant: ' /etc/slftp/sltools.cfg '. Verifier les intructions sur le depot: ' https://github.com/ZarTek-Creole/slTools '." && exit 1) || source /etc/slftp/sltools.cfg
+    [ -z "$slftp_binary_screen" ] && error_sent "(Err_005) La configuration de 'slftp_binary_screen=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_binary_name" ] && error_sent "(Err_006) La configuration de 'slftp_binary_name=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_screen_name" ] && error_sent "(Err_007) La configuration de 'slftp_screen_name=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_restart_onfailure" ] && error_sent "(Err_008) La configuration de 'slftp_restart_onfailure=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_directory" ] && [ $slftp_directory != "/home/changeMe/slftp" ] && error_sent "La configuration de 'slftp_directory=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_start_reset_files" ] && error_sent "(Err_009) La configuration de 'slftp_start_reset_files=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_unix_user" ] && error_sent "(Err_010) La configuration de 'slftp_unix_user=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+    [ -z "$slftp_unix_group" ] && error_sent "(Err_011) La configuration de 'slftp_unix_group=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
+
+    
+    # check for needed bins
+    for BIN in $BINS_NEEDED; do
+        if [[ "$(command -v "$BIN")" != "" ]]; then
+            debug_sent "[+] FOUND: $BIN"
+        else
+            debug_sent "[-] NOT FOUND: $BIN"
+            BINS_MISSING="$BINS_MISSING $BIN"
+        fi
+    done
+    if [ -n "$BINS_MISSING" ]; then
+        error_sent "[!] Some binaries are missing:$BINS_MISSING \n\r[iNFo] check dependencies on https://github.com/ZarTek-Creole/slTools"
+        echo " "
+        read -n 1 -s -r -p "Press CTRL+C to abort  OR  any key to continue."
+        echo -ne "\033[0K\r"
+    fi
+}
+
+
 
 function banner() {
     clear
-    print "
-           __                  ▄▄▄▄▄▄▄▄▄▄▄
-          |  \    ▄▄▄▄▄▄▄▄▄▄▄ ▐░░░░░░░░░░░▌
-  _______ | ██   ▐░░░░░░░░░░░▌▐░█▀▀▀▀▀▀▀█░▌ ████▄ █      ▄▄▄▄▄
- /       \| ██    ▀▀▀▀█░█▀▀▀▀ ▐░▌ ████▄ ▐░▌ █   █ █     █     ▀▄
-|  ██-█▀█▄| ██        ▐░▌     ▐░▌ █   █ ▐░▌ █   █ █   ▄  ▀▀▀▀▄
- \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ▀████ ███▄ ▀▄▄▄▄▀  
-  \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌       By ZarTeK ▀
- ___   ▄█▀| ██         ▀      ▐░░░░░░░░░░░▌                 
- \▄▄▄▄▄_█▀ \██                 ▀▀▀▀▀▀▀▀▀▀▀"                                           
-    echo "Welcome to the slTools v$VER"
+    echo "
+           __         (█)    ( ▄▄▄▄(█)▄▄▄▄ )   ,---.         ( ) ▀     ▀ ( )
+          |  \    ▄▄▄▄███▄▄▄▄ ▐░░░░░░░░░░░▌   ' S ,'\   \(/     \  ▀▀▀  /
+  _______ | ██   ▐░░░░░█░░░░░▌▐░█▀▀▀▀▀▀▀█░▌  / L /   |  /▄\    ▄    ▄▄▄▄
+ /       \| ██    ▀▀▀▀█░█▀▀▀▀ ▐░▌ ████▄ ▐░▌ . O ; ,. :  |█|   ▀▄▀  █     ▀▄
+|  ██-█▀█▄| ██        ▐░▌     ▐░▌ █   █ ▐░▌ ' O | |: :  |█|____ ▄  ▀▀▀▀▄  L
+ \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ' T | .; :  \█▀▀███| ▀▄▄▄▄▀    
+  \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌ | L :    |  :/ /::::  ▄   ▄
+ ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
+ \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_      ▀   ▀"
+    echo "
+                  Hi $(whoami), Welcome to the sl-Tools v$VER
+    "
 }
-banner
 
-           __ 
- 
-              
-              
+function slftp_install() {
+    banner
+    
+}
+function sltools_mainmenu
+{
+    banner
+    PS3="Select the operation: "
 
-
-sltools_protect=0
+    select opt in           \
+        "Start slFTP"       \
+        "Join slFTP"        \
+        "Install slFTP"     \
+        "Update slFTP"      \
+        "Config slTools"    \
+        "Update slTools"    \
+        "Info slTools"    \
+        "Uninstall slTools" \
+        "Quit"; do
+        case $opt in
+            "Start slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Join slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Install slFTP") slftp_install; sleep 2; sltools_mainmenu; break;;
+            "Update slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Config slTools") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Update slTool") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Info slTool") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Uninstall slTools") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            Quit) break;;
+            *) echo "Invalid option $REPLY";;
+        esac
+    done
+}
+# run sltools
+sltools_init
+sltools_mainmenu

@@ -1,31 +1,25 @@
-#!/usr/bin/env bash
-VER=0.2
-clear
-
-if [ ! `whoami` = "root" ] 
-then 
-    echo "(Err_015) The installer should be run as root"
-    exit 0
-fi
-echo "Welcome to the slTools installer v$VER"
-
 install:
-    install -m 755 -d /opt/sltools/
-    install -m 755 \
-        opt/sltools/sltools_control.sh \
-        opt/sltools/sltools_join.sh \
-        opt/sltools/sltools_run_screen.sh \
-        opt/sltools/sltools_run_slftp.sh \
-        opt/sltools/sltools_run_slftp.sh \
-        opt/sltools/sltools_run.sh \
-        /opt/sltools/
-
-    install -m 755 -d /etc/slftp/
-    install -m 755 \
-        etc/slftp/sltools.cfg.dist \
+	install -m 755 -d /opt/sltools
+	install -m 755                          \
+        opt/sltools/sltools_control.sh      \
+        opt/sltools/sltools_join.sh         \
+        opt/sltools/sltools_run_screen.sh   \
+        opt/sltools/sltools_run_slftp.sh    \
+        opt/sltools/sltools_run.sh          \
+        /opt/sltools/;
+	install -m 755 -d /etc/slftp
+	install -m 755                  \
+        etc/slftp/sltools.cfg.dist  \
         /etc/slftp/
-    install -m 755 \
+
+	install -m 755      \
         usr/bin/sltools \
         /usr/bin/
-    echo "slTools is now installed, for use type: sltools "
-    echo "more informations on  "
+	@echo "*-----------------------------------------*"
+	@echo "* sl-Tools à été installer                *"
+	@echo "* le repertoire de configuration ce       *"
+	@echo "* trouve dans /etc/slftp et doit etre     *"
+	@echo "* renomer en sltools.cfg                  *"
+	@echo "* Apres vous pouvez executer le programme *"
+	@echo "* Avec la commande sltools (root/user)    *"
+	@echo "*-----------------------------------------*"
