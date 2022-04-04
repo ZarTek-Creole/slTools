@@ -7,40 +7,58 @@
  \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ' T | .; :  \█▀▀███| ▀▄▄▄▄▀    
   \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌ | L :    |  :/ /::::  ▄   ▄
  ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
- \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_      ▀   ▀
+ \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----' _/  \_       ▀   ▀
 ```
-!!! | sl-Tools software in construction
-- [sl-Tools](#sl-tools)
-  - [Des outils pour slFTP :](#des-outils-pour-slftp-)
-    - [Installation (automatique) de slFTP](#installation-automatique-de-slftp)
-    - [Lancement de slFTP sous un screen (nom du screen configurable)](#lancement-de-slftp-sous-un-screen-nom-du-screen-configurable)
+!!! | SL-Tools software in construction
+- [SL-Tools](#sl-tools)
+  - [Des outils pour slFTP:](#des-outils-pour-slftp)
+    - [Installation de slFTP](#installation-de-slftp)
+    - [Lancement de slFTP](#lancement-de-slftp)
     - [Joindre le screen slFTP](#joindre-le-screen-slftp)
-    - [En cas de crash/fermeture re-lancement automatique (configurable)](#en-cas-de-crashfermeture-re-lancement-automatique-configurable)
+    - [Crash ou fermeture de slftp](#crash-ou-fermeture-de-slftp)
     - [Mise à jour de slFTP](#mise-à-jour-de-slftp)
-  - [Des outils pour s-ltools :](#des-outils-pour-s-ltools-)
-    - [Informations sur sl-Tools](#informations-sur-sl-tools)
-    - [Configuration de sl-Tools](#configuration-de-sl-tools)
-    - [Mise à jour de sl-Tools](#mise-à-jour-de-sl-tools)
-    - [Désinstallation de sl-Tools](#désinstallation-de-sl-tools)
+  - [Des outils pour SL-Tools:](#des-outils-pour-sl-tools)
+    - [About sur SL-Tools](#about-sur-sl-tools)
+    - [Configuration de SL-Tools](#configuration-de-sl-tools)
+    - [Mise à jour de SL-Tools](#mise-à-jour-de-sl-tools)
+    - [Désinstallation de SL-Tools](#désinstallation-de-sl-tools)
+  - [Des outils pour FPC:](#des-outils-pour-fpc)
+    - [Installation](#installation)
+    - [Mise à jour](#mise-à-jour)
   - [general](#general)
     - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
  
-# sl-Tools
+# SL-Tools
 Programme écris en bash pour avoir une gestion de slFTP (toolbox). 
 
-## Des outils pour slFTP :
+## Des outils pour slFTP:
 
-### Installation (automatique) de slFTP
-
-### Lancement de slFTP sous un screen (nom du screen configurable)
+### Installation de slFTP
+Installation automatiser de slFTP via sltools
+### Lancement de slFTP
+Lancement de slftp sous un screen unix via sltools pour pouvoir le joindre plus tard.
+Le screen est lancer sous un nom configuratable
 ### Joindre le screen slFTP
-### En cas de crash/fermeture re-lancement automatique (configurable)
+Join facilement le screen existant via sltools
+### Crash ou fermeture de slftp
+sl-tool permet de relancer slftp dans un screen lors d'un crash ou fermeture de celui-ci
+C'est option est configurable.
 ### Mise à jour de slFTP
-## Des outils pour s-ltools :
-### Informations sur sl-Tools
-### Configuration de sl-Tools
-### Mise à jour de sl-Tools
-### Désinstallation de sl-Tools
+sl-Tools permet de mêtre facilement à jours slFTP, en allant chercher la derniere version,  en le recompillant et l'installant dans l'environement systeme
+## Des outils pour SL-Tools:
+### About sur SL-Tools
+Informations sur sl-ftp. Version, site web, aide ..
+### Configuration de SL-Tools
+Permet de configurer les options de SL-TOOLS et les composants
+### Mise à jour de SL-Tools
+SL-Tools peu ce mettre a jour lui-même.
+### Désinstallation de SL-Tools
+Desinstallation propre de Sl-Tools..
+## Des outils pour FPC:
+### Installation
+Installation du compilateur pascal pour compiller les sources slftp.
+### Mise à jour
+Mise à jour facile du FPC (freePAscal compiler)
 ## general
 ### Vos besoins, suggestions, bugs: 
 n’hesitez pas a participer au projet, il n'est pas obligatoire de savoir developper.
