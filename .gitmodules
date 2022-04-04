@@ -1,6 +1,6 @@
-[submodule "opt/slftp/src"]
-	path = opt/slftp/src
-	url = https://gitlab.com/slftp/slftp.git
-[submodule "opt/fpc/src"]
-	path = opt/fpc/src
+[submodule "opt/src/fpc"]
+	path = opt/src/fpc
 	url = https://gitlab.com/freepascal.org/fpc/source.git
+[submodule "opt/src/slftp"]
+	path = opt/src/slftp
+	url = https://gitlab.com/slftp/slftp.git
