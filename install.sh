@@ -30,7 +30,7 @@
         /usr/share/locale/en/LC_MESSAGES/
 
 	echo "*-----------------------------------------*"
-	echo "* SL-Tools à été installé                 *"
+	echo "* SL-Tools a été installé                 *"
 	echo "* le répertoire de configuration se       *"
 	echo "* trouve dans /etc/slftp et doit être     *"
 	echo "* renommé en sltools.cfg                  *"
