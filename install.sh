@@ -21,12 +21,12 @@
 
 	install -m 755 -d /usr/share/locale/fr/LC_MESSAGES/
 	install -m 755      \
-        langs/fr/sltools.mo  \
+        langs/fr/LC_MESSAGES/sltools.mo  \
         /usr/share/locale/fr/LC_MESSAGES/
 
 	install -m 755 -d /usr/share/locale/en/LC_MESSAGES/
 	install -m 755      \
-        langs/en/sltools.mo  \
+        langs/en/LC_MESSAGES/sltools.mo  \
         /usr/share/locale/en/LC_MESSAGES/
 
 	echo "*-----------------------------------------*"
