@@ -56,7 +56,7 @@ function Init() {
 }
 function File_Init() {
     debug_sent "[RUN] File_Init"
-    [ ! -f "$FILE_CONF" ] && msg_sent $(m_tr  "(Err_004) Le fichier de SL-Tools suivant est manquant: ' %s '. Création du fichier ...") $FILE_CONF && mkdir -p "$(dirname "$FILE_CONF")" && touch "$FILE_CONF"
+    [ ! -f "$FILE_CONF" ] && msg_sent $(m_tr  "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ...") $FILE_CONF && mkdir -p "$(dirname "$FILE_CONF")" && touch "$FILE_CONF"
     source "$FILE_CONF"
     # Efface les anciens logs ...
     [ -f "$FILE_LOG" ] && rm "$FILE_LOG"
@@ -74,15 +74,15 @@ function Binary_Init() {
         fi
     done
     if [ -n "$BINS_MISSING" ]; then
-        error_sent "$(m_tr  "[!] Some binaries are missing:%s\n\r[iNFo] check dependencies on https://github.com/ZarTek-Creole/slTools")" "$BINS_MISSING"
+        error_sent "$(m_tr  "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "$BINS_MISSING"
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
     echo "oooook"
-        error_sent "$(m_tr  "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp.")"
+        error_sent "$(m_tr  "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp.")"
     fi
     if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
-        error_sent "$(m_tr "(Err_016) %s est manquant.")" "${slftp_binary_name}"
+        error_sent "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
         Install_SLFTP
     fi
     sleep 5
@@ -92,13 +92,13 @@ function Install_SLFTP() {
     debug_sent "[RUN] Install_SLFTP"
     PS3="Select the operation: "
     select opt in           \
-        "$(m_tr  "Installer FPC manuellement")"\
-        "$(m_tr  "Installer FPC automatiquement")" \
+        "$(m_tr  "Install FPC manually")"\
+        "$(m_tr  "Install FPC automatically")" \
         "$(m_tr  "Quit")";
         do
             case $opt in
-                "Installer FPC automatiquement") Install_FPC; sleep 2; Main_Menu; break;;
-                "Installer FPC manuellement") break;;
+                "Install FPC automatically") Install_FPC; sleep 2; Main_Menu; break;;
+                "Install FPC manually") break;;
                 Quit) break;;
                 *) echo "Invalid option $REPLY";;
             esac
@@ -152,7 +152,7 @@ function FCT_Config_Set() {
 function FCT_Config_Check() {
     debug_sent "[RUN] FCT_Config_Check $*"
     # test comment
-    [[ ! -v "$1" ]] && msg_sent $(m_tr  "Err_005 La configuration de '%s=<value>' est manquant dans %s") "$1" $FILE_CONF && FCT_Config_Set "$1" 
+    [[ ! -v "$1" ]] && msg_sent $(m_tr  "(Err_005) The configuration of '%s=Value' is missing in %s") "$1" $FILE_CONF && FCT_Config_Set "$1" 
     debug_sent "[OK] FCT_Config_Check $*"
 }
 function Config_Init() {
