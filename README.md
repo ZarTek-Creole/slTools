@@ -71,9 +71,9 @@ Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [List dependancies)](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L45)
 ---
 ```
- ____|~\_
-[atkous|-]
- (_)   (_)
+ ____|~\_      ____|~\_
+[atkous|-]    [ Moon |-]
+ (_)   (_)     (_)   (_)
 ```
 
 

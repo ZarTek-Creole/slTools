@@ -19,6 +19,16 @@
 	cp -r opt/src/fpc /opt/src/
 	cp -r opt/src/slftp /opt/src/
 
+	install -m 755 -d /usr/share/locale/fr/LC_MESSAGES/
+	install -m 755      \
+        langs/fr/sltools.mo  \
+        /usr/share/locale/fr/LC_MESSAGES/
+
+	install -m 755 -d /usr/share/locale/en/LC_MESSAGES/
+	install -m 755      \
+        langs/en/sltools.mo  \
+        /usr/share/locale/en/LC_MESSAGES/
+
 	echo "*-----------------------------------------*"
 	echo "* SL-Tools à été installer                *"
 	echo "* le repertoire de configuration ce       *"
