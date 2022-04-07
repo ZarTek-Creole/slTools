@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 	install -m 755 -d /opt/sltools
 	install -m 755                          \
-        opt/sltools/sltools_control.sh      \
         opt/sltools/sltools_join.sh         \
         opt/sltools/sltools_run_screen.sh   \
         opt/sltools/sltools_run_slftp.sh    \
@@ -21,7 +20,7 @@
 	cp -r opt/src/slftp /opt/src/
 
 	echo "*-----------------------------------------*"
-	echo "* sl-Tools à été installer                *"
+	echo "* SL-Tools à été installer                *"
 	echo "* le repertoire de configuration ce       *"
 	echo "* trouve dans /etc/slftp et doit etre     *"
 	echo "* renomer en sltools.cfg                  *"

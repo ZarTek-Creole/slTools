@@ -27,16 +27,17 @@
     - [Mise à jour](#mise-à-jour)
   - [general](#general)
     - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
+- [SL-Tools dependancies](#sl-tools-dependancies)
+  - [List dependancies)](#list-dependancies)
  
 # SL-Tools
 Programme écris en bash pour avoir une gestion de slFTP (toolbox). 
-
 ## Des outils pour slFTP:
 
 ### Installation de slFTP
 Installation automatiser de slFTP via sltools
 ### Lancement de slFTP
-Lancement de slftp sous un screen unix via sltools pour pouvoir le joindre plus tard.
+Lancement de slftp sous un screen unix viaSL-Toolspour pouvoir le joindre plus tard.
 Le screen est lancer sous un nom configuratable
 ### Joindre le screen slFTP
 Join facilement le screen existant via sltools
@@ -44,7 +45,7 @@ Join facilement le screen existant via sltools
 sl-tool permet de relancer slftp dans un screen lors d'un crash ou fermeture de celui-ci
 C'est option est configurable.
 ### Mise à jour de slFTP
-sl-Tools permet de mêtre facilement à jours slFTP, en allant chercher la derniere version,  en le recompillant et l'installant dans l'environement systeme
+SL-Tools permet de mêtre facilement à jours slFTP, en allant chercher la derniere version,  en le recompillant et l'installant dans l'environement systeme
 ## Des outils pour SL-Tools:
 ### About sur SL-Tools
 Informations sur sl-ftp. Version, site web, aide ..
@@ -58,7 +59,7 @@ Desinstallation propre de Sl-Tools..
 ### Installation
 Installation du compilateur pascal pour compiller les sources slftp.
 ### Mise à jour
-Mise à jour facile du FPC (freePAscal compiler)
+Mise à jour facile du FPC (Free Pascal Compiler)
 ## general
 ### Vos besoins, suggestions, bugs: 
 n’hesitez pas a participer au projet, il n'est pas obligatoire de savoir developper.
@@ -66,9 +67,14 @@ Si vous rapports des bugs, données des idées d'amelioration vous aidez déjà 
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [Et c'est part ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
+# SL-Tools dependancies 
+[List dependancies)](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L45)
 ---
 ```
  ____|~\_
 [atkous|-]
  (_)   (_)
 ```
+
+
+

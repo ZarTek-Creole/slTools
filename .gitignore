@@ -1,3 +1,5 @@
 /.markdownlint.json
 .vscode/dryrun.log
 .vscode/settings.json
+/etc/slftp/sltools.cfg
+/generate_lang.sh

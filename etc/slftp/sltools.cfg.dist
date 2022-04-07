@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
 ###
 #
-# slTools (slFTP Tools) Edition community
+# SL-Tools (slFTP Tools) Edition community
 #
 # Author:               ZarTeK (ZarTeK.Creole@gmail.com)
 # Website:              https://github.com/ZarTek-Creole/slTools
 # Bugs,idea,sugestion : https://github.com/ZarTek-Creole/slTools/issues/new
 #
 ##
-# Fichier de configuration slTools :
+# Fichier de configuration SL-Tools:
 # binaire :
-slftp_binary_screen=/usr/bin/screen
+binary_screen=/usr/bin/screen
 slftp_binary_name=slftp
 # 
 slftp_screen_name=slFTPScr
-slftp_directory=/home/changeMe/slftp
+slftp_directory=/opt/slftp
 # Run As :
-slftp_unix_user=slftp
-slftp_unix_group=slftp
+unix_user=slftp
+unix_group=slftp
 ####
 # Run loop: (en cas de fermeture/crash de slftp)
 ####
 # redemarer slftp en cas de fermeture de l'application?
 slftp_restart_onfailure=1
 # combien de temps doit t'il attendre avant de redemmarer (secondes)?
-slftp_restart_wait=5
+restart_wait=5
 # au (re)demarage faut-il reset les fichiers suivant ?
 # stats.db slftp.history stats.db slftp.kb slftp.log
-slftp_start_reset_files=1
-slftp_reset_list="slftp.kb slftp.speedstats slftp.history slftp.renames precatcher.log slftp.log databases/*.db"
+start_reset_files=1
+reset_list="slftp.kb slftp.speedstats slftp.history slftp.renames precatcher.log slftp.log databases/*.db"

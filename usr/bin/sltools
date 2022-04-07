@@ -1,62 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
+#set -f -v -x
 VER=0.2
-DEBUG=1
+DEBUG=0
 LOG=1
-LOG_FILE="/var/log/sltools.log"
-BINS_NEEDED="echo grep basename cut sha256sum sha1sum md5sum printf tr head tail tar git"
-# trap ctrl-c and call ctrl_c()
-trap ctrl_c INT
-
-function ctrl_c() {
-        echo " ** CTRL-C ..."
-
-        exit 1
-}
-
-function msg_sent {
-    echo "[sl-TOOLS] $*"
-}
-function error_sent {
-    printf "[ERROR] $*\n\r";
-    if [ "$LOG" = 1 ]; then echo "[$(date)] [ERROR] $*" >> $LOG_FILE; fi
-    exit 0
-}
-function debug_sent {
-    
-    if [ "$DEBUG" = 1 ]; then echo "[DEBUG] $*"; fi
-    if [ "$LOG" = 1 ]; then echo "[$(date)] [ERROR] $*" >> $LOG_FILE; fi
-}
-function sltools_init() {
-    [ ! -f /etc/slftp/sltools.cfg ] && (error_sent "(Err_004) Le fichier de slTools suivant est manquant: ' /etc/slftp/sltools.cfg '. Verifier les intructions sur le depot: ' https://github.com/ZarTek-Creole/slTools '." && exit 1) || source /etc/slftp/sltools.cfg
-    [ -z "$slftp_binary_screen" ] && error_sent "(Err_005) La configuration de 'slftp_binary_screen=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_binary_name" ] && error_sent "(Err_006) La configuration de 'slftp_binary_name=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_screen_name" ] && error_sent "(Err_007) La configuration de 'slftp_screen_name=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_restart_onfailure" ] && error_sent "(Err_008) La configuration de 'slftp_restart_onfailure=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_directory" ] && [ $slftp_directory != "/home/changeMe/slftp" ] && error_sent "La configuration de 'slftp_directory=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_start_reset_files" ] && error_sent "(Err_009) La configuration de 'slftp_start_reset_files=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_unix_user" ] && error_sent "(Err_010) La configuration de 'slftp_unix_user=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-    [ -z "$slftp_unix_group" ] && error_sent "(Err_011) La configuration de 'slftp_unix_group=<value>' est manquant dans /etc/slftp/sltools.cfg" && exit 1
-
-    
-    # check for needed bins
-    for BIN in $BINS_NEEDED; do
-        if [[ "$(command -v "$BIN")" != "" ]]; then
-            debug_sent "[+] FOUND: $BIN"
-        else
-            debug_sent "[-] NOT FOUND: $BIN"
-            BINS_MISSING="$BINS_MISSING $BIN"
-        fi
-    done
-    if [ -n "$BINS_MISSING" ]; then
-        error_sent "[!] Some binaries are missing:$BINS_MISSING \n\r[iNFo] check dependencies on https://github.com/ZarTek-Creole/slTools"
-        echo " "
-        read -n 1 -s -r -p "Press CTRL+C to abort  OR  any key to continue."
-        echo -ne "\033[0K\r"
-    fi
-}
-
-
-
+LANGUAGE=fr_fr
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=sltools
 function banner() {
     clear
     echo "
@@ -68,45 +17,263 @@ function banner() {
  \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ' T | .; :  \█▀▀███| ▀▄▄▄▄▀    
   \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌ | L :    |  :/ /::::  ▄   ▄
  ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
- \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_      ▀   ▀"
+ \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_       ▀   ▀"
     echo "
                   Hi $(whoami), Welcome to the sl-Tools v$VER
     "
 }
-
-function slftp_install() {
-    banner
-    
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+function ctrl_c() {
+    echo " ** CTRL-C ..."
+    exit 1
 }
-function sltools_mainmenu
+function msg_sent {
+    # msg_sent "$msg" $value1 $value2 $value...
+    # msg_sent 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
+    printf  "[sl-TOOLS] $@"
+    printf  "\n"
+}
+
+function error_sent {
+    msg_sent  "[ERROR] $@"
+    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "$FILE_LOG"; fi
+    exit 0
+}
+function debug_sent {
+    if [ "$DEBUG" = 1 ]; then msg_sent "[DEBUG] $@" && sleep 1; fi
+    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "$FILE_LOG"; fi
+}
+function m_tr {
+   echo $(gettext -s -d sltools "$@")
+}
+function Init() {
+    BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext"
+    FILE_CONF=/etc/slftp/sltools.cfg
+    FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
+    FILE_LOG=/var/log/sltools.log
+    debug_sent "[OK] Init"
+}
+function File_Init() {
+    debug_sent "[RUN] File_Init"
+    [ ! -f "$FILE_CONF" ] && msg_sent $(m_tr  "(Err_004) Le fichier de SL-Tools suivant est manquant: ' %s '. Création du fichier ...") $FILE_CONF && mkdir -p "$(dirname "$FILE_CONF")" && touch "$FILE_CONF"
+    source "$FILE_CONF"
+    # Efface les anciens logs ...
+    [ -f "$FILE_LOG" ] && rm "$FILE_LOG"
+    debug_sent "[OK] File_Init"
+}
+function Binary_Init() {
+    debug_sent "[RUN] Binary_Init"
+    # check for needed bins
+    for BIN in $BINS_NEEDED; do
+        if [[ "$(command -v "$BIN")" != "" ]]; then
+            debug_sent "[+] FOUND: $BIN"
+        else
+            debug_sent "[-] NOT FOUND: $BIN"
+            BINS_MISSING="$BINS_MISSING $BIN"
+        fi
+    done
+    if [ -n "$BINS_MISSING" ]; then
+        error_sent "$(m_tr  "[!] Some binaries are missing:%s\n\r[iNFo] check dependencies on https://github.com/ZarTek-Creole/slTools")" "$BINS_MISSING"
+
+    fi
+    if [[ "$(command -v fpc)" == "" ]]; then
+    echo "oooook"
+        error_sent "$(m_tr  "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp.")"
+    fi
+    if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
+        error_sent "$(m_tr "(Err_016) %s est manquant.")" "${slftp_binary_name}"
+        Install_SLFTP
+    fi
+    sleep 5
+    debug_sent "[OK] Binary_Init"
+}
+function Install_SLFTP() {
+    debug_sent "[RUN] Install_SLFTP"
+    PS3="Select the operation: "
+    select opt in           \
+        "$(m_tr  "Installer FPC manuellement")"\
+        "$(m_tr  "Installer FPC automatiquement")" \
+        "$(m_tr  "Quit")";
+        do
+            case $opt in
+                "Installer FPC automatiquement") Install_FPC; sleep 2; Main_Menu; break;;
+                "Installer FPC manuellement") break;;
+                Quit) break;;
+                *) echo "Invalid option $REPLY";;
+            esac
+        done
+
+    debug_sent "[OK] Install_SLFTP"
+}
+function Install_FPC() {
+    debug_sent "[RUN] Install_FPC"
+    if [[ "$(command -v fpc)" == "" ]]; then
+        error_sent "$(m_tr  "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp.")"
+          PS3="Select the operation: "
+    select opt in           \
+        "Installer FPC manuellement"\
+        "Installer FPC automatiquement" \
+        "Quit"; do
+        case $opt in
+            "Installer FPC automatiquement") Install_FPC; sleep 2; Main_Menu; break;;
+            "Installer FPC manuellement") break;;
+            Quit) break;;
+            *) echo "Invalid option $REPLY";;
+        esac
+    done
+    fi
+    debug_sent "[OK] Install_FPC"
+}
+function sent_to_cmd() {
+    #       -S sessionname
+    # When creating a new session, this option can be used to specify a meaningful name for the session. This name identifies the session for "screen -list" and "screen -r" actions. It substitutes the default [tty.host] suffix.
+    #       -p number_or_name
+    # Preselect a window. This is usefull when you want to reattach to a specific windor or you want to send a command via the "-X" option to a specific window. As with screen's select commant, "-" selects the blank window. As a special case for reattach, "=" brings up the windowlist on the blank windo
+    #       -X
+    # Send the specified command to a running screen session. You can use the -d or -r option to tell screen to look only for attached or detached screen sessions. Note that this command doesn't work if the session is password protected.
+    screen -S "$slftp_screen_name" -p 0 -X stuff "stop^M"
+}
+
+function FCT_Config_Set() {
+    debug_sent "[RUN] FCT_Config_Set $*"
+    [ ! -f $FILE_CONF_DEF ] && echo "creation de $FILE_CONF_DEF" && touch $FILE_CONF_DEF
+    [ ! -f $FILE_CONF ] && echo "creation de $FILE_CONF" && touch $FILE_CONF
+    if [[ -f "$FILE_CONF" && "$( grep -c -w "$1" $FILE_CONF)" = 1 ]]; then
+	    value=$(grep -w "$1" $FILE_CONF | cut -d "=" -f2 | tr -d "\"")
+    else
+        value_default=$(cat $FILE_CONF_DEF | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
+	    echo -n "Please enter the value for $1, default [ $value_default ] : " ; read -r value
+    	[ "$value" = "" ] && value=$value_default
+    fi
+    [ "$(grep -c -w "$1=" $FILE_CONF )" = 0 ] && echo "$1"=\""$value"\" >> $FILE_CONF
+    debug_sent "[OK] FCT_Config_Set $*"
+}
+function FCT_Config_Check() {
+    debug_sent "[RUN] FCT_Config_Check $*"
+    # test comment
+    [[ ! -v "$1" ]] && msg_sent $(m_tr  "Err_005 La configuration de '%s=<value>' est manquant dans %s") "$1" $FILE_CONF && FCT_Config_Set "$1" 
+    debug_sent "[OK] FCT_Config_Check $*"
+}
+function Config_Init() {
+    debug_sent "[RUN] config"
+    FCT_Config_Check "DEBUG"
+    FCT_Config_Check "LOG"
+    FCT_Config_Check "slftp_binary_name"
+    FCT_Config_Check "slftp_screen_name"
+    FCT_Config_Check "slftp_restart_onfailure"
+    FCT_Config_Check "slftp_directory"
+    FCT_Config_Check "start_reset_files"
+    FCT_Config_Check "unix_user"
+    FCT_Config_Check "unix_group"
+    debug_sent "[OK] config"
+}
+
+function Menu_SLFTP
 {
     banner
+    debug_sent "[RUN] Menu_SLFTP"
     PS3="Select the operation: "
-
     select opt in           \
         "Start slFTP"       \
         "Join slFTP"        \
         "Install slFTP"     \
         "Update slFTP"      \
-        "Config slTools"    \
-        "Update slTools"    \
-        "Info slTools"    \
-        "Uninstall slTools" \
-        "Quit"; do
+        "Return Main"      \
+    "Quit"; do
         case $opt in
-            "Start slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Join slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Install slFTP") slftp_install; sleep 2; sltools_mainmenu; break;;
-            "Update slFTP") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Config slTools") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Update slTool") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Info slTool") echo "soon"; sleep 2; sltools_mainmenu; break;;
-            "Uninstall slTools") echo "soon"; sleep 2; sltools_mainmenu; break;;
+            "Start slFTP") echo "soon"; sleep 2; Main_Menu; break;;
+            "Join slFTP") echo "soon"; sleep 2; Main_Menu; break;;
+            "Update slFTP") echo "soon"; sleep 2; Main_Menu; break;;
+            "Install slFTP") install_slftp; sleep 2; Main_Menu; break;;
+            "Return Main") Main_Menu; break;;
             Quit) break;;
             *) echo "Invalid option $REPLY";;
         esac
     done
 }
+function Menu_FPC
+{
+    banner
+    debug_sent "[RUN] Menu_FPC"
+    PS3="Select the operation: "
+    select opt in           \
+        "Install FPC"       \
+        "Return Main"      \
+    "Quit"; do
+        case $opt in
+            "Install FPC") Install_FPC; sleep 2; Main_Menu; break;;
+            "Return Main") Main_Menu; break;;
+            Quit) break;;
+            *) echo "Invalid option $REPLY";;
+        esac
+    done
+}
+function SLTOOLS_Menu
+{
+    banner
+    debug_sent "[RUN] SLTOOLS_Menu"
+    PS3="Select the operation: "
+    select opt in           \
+        "Config slTools"    \
+        "Update slTools"    \
+        "Info slTools"      \
+        "Uninstall slTools" \
+        "Return Main"       \
+        "Quit"; do
+        case $opt in
+            "Menu SLFTP") Menu_SLFTP break;;
+            "Config slTools") echo "soon"; sleep 2; Main_Menu; break;;
+            "Update slTool") echo "soon"; sleep 2; Main_Menu; break;;
+            "Info slTool") echo "soon"; sleep 2; Main_Menu; break;;
+            "Uninstall slTools") echo "soon"; sleep 2; Main_Menu; break;;
+            "Return Main") Main_Menu; break;;
+            Quit) break;;
+            *) echo "Invalid option $REPLY";;
+        esac
+    done
+    debug_sent "[OK] SLTOOLS_Menu"
+}
+function Main_Menu
+{
+    banner
+    debug_sent "[RUN] Main_Menu"
+    PS3="Select the operation: "
+    select opt in           \
+        "Menu SLFTP"    \
+        "Menu SL-Tools"    \
+        "Quit"; do
+        case $opt in
+            "Menu SLFTP") Menu_SLFTP break;;
+            "Menu SL-Tools") SLTOOLS_Menu break;;
+            Quit) break;;
+            *) echo "Invalid option $REPLY";;
+        esac
+    done
+    debug_sent "[OK] Main_Menu"
+}
+# Terminal command
+usage() {                                 # Function: Print a help message.
+  echo "Usage: $0 [ -n NAME ] [ -t TIMES ]" 1>&2 
+}
+testargs() {
+   # [ "$1" = "--help" -o "$1" = "-h" ] && usage
+   [[ $1 == "" ]] && return;
+   echo "tessttt"
+    while getopts ":n:t:" options; do 
+    echo "${options}"
+        case "${options}" in
+            n) echo "${OPTARG}";;
+            :) return;;
+            *) usage;;
+        esac
+    done
+    exit 0    
+}
+testargs "$@"
 # run sltools
-sltools_init
-sltools_mainmenu
+Init
+File_Init
+Config_Init
+Binary_Init
+Main_Menu
