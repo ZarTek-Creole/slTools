@@ -25,7 +25,7 @@
   - [Des outils pour FPC:](#des-outils-pour-fpc)
     - [Installation](#installation)
     - [Mise à jour](#mise-à-jour)
-  - [general](#general)
+  - [géneral](#general)
     - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
 - [SL-Tools dependancies](#sl-tools-dependancies)
   - [List dependancies)](#list-dependancies)
@@ -63,7 +63,7 @@ Mise à jour facile du FPC (Free Pascal Compiler)
 ## géneral
 ### Vos besoins, suggestions, bugs: 
 n’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
-Si vous rapports des bugs, données des idées d'amelioration vous aidez déjà le projet.
+Si vous rapportez des bugs, donnez des idées d'amélioration vous aidez déjà le projet.
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [Et c'est part ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
