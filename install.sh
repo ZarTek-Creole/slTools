@@ -20,10 +20,10 @@
 	cp -r opt/src/slftp /opt/src/
 
 	echo "*-----------------------------------------*"
-	echo "* SL-Tools à été installer                *"
-	echo "* le repertoire de configuration ce       *"
-	echo "* trouve dans /etc/slftp et doit etre     *"
-	echo "* renomer en sltools.cfg                  *"
-	echo "* Apres vous pouvez executer le programme *"
+	echo "* SL-Tools à été installé                 *"
+	echo "* le répertoire de configuration se       *"
+	echo "* trouve dans /etc/slftp et doit être     *"
+	echo "* renommé en sltools.cfg                  *"
+	echo "* Après vous pouvez éxécuter le programme *"
 	echo "* Avec la commande sltools (root/user)    *"
 	echo "*-----------------------------------------*"
