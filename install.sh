@@ -19,15 +19,13 @@
 	cp -r opt/src/fpc /opt/src/
 	cp -r opt/src/slftp /opt/src/
 
-	install -m 755 -d /usr/share/locale/fr/LC_MESSAGES/
-	install -m 755      \
-        langs/fr/LC_MESSAGES/sltools.mo  \
-        /usr/share/locale/fr/LC_MESSAGES/
+	cd locale
+	for translation in */LC_MESSAGES/sltools.mo; do
+		LOCALE=$(echo -n "$translation" | cut -d/ -f1)
+		install -Dm 644 "$LOCALE/LC_MESSAGES/sltools.mo" "/usr/share/locale/$LOCALE/LC_MESSAGES/"
+	done
 
-	install -m 755 -d /usr/share/locale/en/LC_MESSAGES/
-	install -m 755      \
-        langs/en/LC_MESSAGES/sltools.mo  \
-        /usr/share/locale/en/LC_MESSAGES/
+
 
 	echo "*-----------------------------------------*"
 	echo "* SL-Tools a été installé                 *"

@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ZarTeK Creole
+# This file is distributed under the same license as the sltools package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: sltools 0.0.1\n"
+"Report-Msgid-Bugs-To: ZarTeK.Creole@GMail.com\n"
+"POT-Creation-Date: 2022-04-08 02:07+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: usr/bin/sltools:56
+msgid "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..."
+msgstr ""
+
+#: usr/bin/sltools:152
+msgid "(Err_005) The configuration of '%s=Value' is missing in %s"
+msgstr ""
+
+#: usr/bin/sltools:109
+msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
+msgstr ""
+
+#: usr/bin/sltools:79
+msgid "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp."
+msgstr ""
+
+#: usr/bin/sltools:82
+msgid "(Err_016) %s is missing."
+msgstr ""
+
+#: usr/bin/sltools:93
+msgid "Install FPC automatically"
+msgstr ""
+
+#: usr/bin/sltools:92
+msgid "Install FPC manually"
+msgstr ""
+
+#: usr/bin/sltools:94
+msgid "Quit"
+msgstr ""
+
+#: usr/bin/sltools:74
+msgid "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools"
+msgstr ""
+
+#: usr/bin/sltools:45
+msgid "sltools"
+msgstr ""

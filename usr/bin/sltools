@@ -3,9 +3,6 @@
 VER=0.2
 DEBUG=0
 LOG=1
-LANGUAGE=fr_fr
-TEXTDOMAINDIR=/usr/share/locale
-TEXTDOMAIN=sltools
 function banner() {
     clear
     echo "
@@ -44,8 +41,8 @@ function debug_sent {
     if [ "$DEBUG" = 1 ]; then msg_sent "[DEBUG] $@" && sleep 1; fi
     if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "$FILE_LOG"; fi
 }
-function m_tr {
-   echo $(gettext -s -d sltools "$@")
+function m_tr { 
+    echo $(gettext sltools "$1") 
 }
 function Init() {
     BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext"

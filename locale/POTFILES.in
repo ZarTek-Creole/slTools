@@ -1,0 +1,9 @@
+./install.sh
+./locale/add_new_language.sh
+./locale/make_mo.sh
+./locale/update_po.sh
+./opt/sltools/sltools_join.sh
+./opt/sltools/sltools_run_screen.sh
+./opt/sltools/sltools_run.sh
+./opt/sltools/sltools_run_slftp.sh
+./usr/bin/sltools
