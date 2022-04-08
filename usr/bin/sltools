@@ -91,7 +91,7 @@ function Binary_Init() {
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
-        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp.")"
+        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiler slftp.")"
     fi
     if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
         banner "SLFTP"
@@ -121,7 +121,7 @@ function Install_SLFTP() {
 function Install_FPC() {
     debug_sent "[RUN] Install_FPC"
     if [[ "$(command -v fpc)" == "" ]]; then
-        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp.")"
+        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp.")"
           PS3="$(m_tr "Select the operation"): "
         select opt in           \
           "$(m_tr "Install manually")" \

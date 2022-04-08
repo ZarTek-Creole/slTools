@@ -26,9 +26,15 @@ msgstr "Err_004: Il manque le fichier de SL-Tools suivant : '%s'. Création du f
 msgid "(Err_005) The configuration of '%s=Value' is missing in %s"
 msgstr "(Err_005) La configuration de '%s=Value' est manquante dans %s"
 
+<<<<<<< HEAD
 #: usr/bin/sltools:124
 msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
 msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
+=======
+#: usr/bin/sltools:109
+msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp."
+msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp."
+>>>>>>> 421dc9e802f525c7a79f406f2bea80167ddec787
 
 #: usr/bin/sltools:94
 msgid "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp."
