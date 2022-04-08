@@ -1,4 +1,4 @@
-# French translations for sltools package.
+# English translations for sltools package.
 # Copyright (C) 2022 ZarTeK Creole
 # This file is distributed under the same license as the sltools package.
 # Automatically generated, 2022.
@@ -8,23 +8,23 @@ msgstr ""
 "Project-Id-Version: sltools 0.0.1\n"
 "Report-Msgid-Bugs-To: ZarTeK.Creole@GMail.com\n"
 "POT-Creation-Date: 2022-04-08 22:04+0000\n"
-"PO-Revision-Date: 2022-04-09 00:06+0200\n"
+"PO-Revision-Date: 2022-04-09 00:05+0200\n"
 "Last-Translator: z\n"
 "Language-Team: none\n"
-"Language: fr\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
 #: usr/bin/sltools:72
 msgid "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..."
-msgstr "Err_004: Il manque le fichier de SL-Tools suivant : '%s'. Création du fichier ..."
+msgstr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..."
 
 #: usr/bin/sltools:168
 msgid "(Err_005) The configuration of '%s=Value' is missing in %s"
-msgstr "(Err_005) La configuration de '%s=Value' est manquante dans %s"
+msgstr "(Err_005) The configuration of '%s=Value' is missing in %s"
 
 #: usr/bin/sltools:124
 msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
@@ -32,20 +32,20 @@ msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
 
 #: usr/bin/sltools:94
 msgid "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp."
-msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour le compilateur slftp."
+msgstr "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp."
 
 #: usr/bin/sltools:98
 msgid "(Err_016) %s is missing."
-msgstr "(Err_016) %s est manquant."
+msgstr "(Err_016) %s is missing."
 
 #: usr/bin/sltools:196 usr/bin/sltools:204 usr/bin/sltools:217
 #: usr/bin/sltools:221 usr/bin/sltools:237 usr/bin/sltools:244
 msgid "Back to main menu"
-msgstr "Retour au menu principal"
+msgstr "Back to main menu"
 
 #: usr/bin/sltools:233 usr/bin/sltools:240
 msgid "Config"
-msgstr "Configuration"
+msgstr "Config"
 
 #: usr/bin/sltools:235 usr/bin/sltools:242
 msgid "Info"
@@ -54,39 +54,36 @@ msgstr "Info"
 #: usr/bin/sltools:194 usr/bin/sltools:202 usr/bin/sltools:216
 #: usr/bin/sltools:220
 msgid "Install"
-msgstr "Installer"
+msgstr "Install"
 
 #: usr/bin/sltools:109 usr/bin/sltools:113 usr/bin/sltools:128
 #: usr/bin/sltools:132
 msgid "Install automatically"
-msgstr "Installer automatiquement"
+msgstr "Install automatically"
 
 #: usr/bin/sltools:108 usr/bin/sltools:114 usr/bin/sltools:127
 #: usr/bin/sltools:133
 msgid "Install manually"
-msgstr "Installer manuellement"
+msgstr "Install manually"
 
 #: usr/bin/sltools:116 usr/bin/sltools:135 usr/bin/sltools:206
 #: usr/bin/sltools:223 usr/bin/sltools:246 usr/bin/sltools:266
 msgid "Invalid option"
-msgstr "Option non valide"
+msgstr "Invalid option"
 
 #: usr/bin/sltools:193 usr/bin/sltools:201
 msgid "Join"
-msgstr "Rejoindre"
+msgstr "Join"
 
 #: usr/bin/sltools:258 usr/bin/sltools:263
-#, fuzzy
 msgid "Menu SL-Tools"
-msgstr "Menu SL-Outils"
+msgstr "Menu SL-Tools"
 
 #: usr/bin/sltools:257 usr/bin/sltools:262
-#, fuzzy
 msgid "Menu SLFTP"
 msgstr "Menu SLFTP"
 
 #: usr/bin/sltools:259 usr/bin/sltools:264
-#, fuzzy
 msgid "Menu cbFTP"
 msgstr "Menu cbFTP"
 
@@ -95,37 +92,37 @@ msgstr "Menu cbFTP"
 #: usr/bin/sltools:218 usr/bin/sltools:222 usr/bin/sltools:238
 #: usr/bin/sltools:245 usr/bin/sltools:260 usr/bin/sltools:265
 msgid "Quit"
-msgstr "Quitter"
+msgstr "Quit"
 
 #: usr/bin/sltools:106 usr/bin/sltools:125 usr/bin/sltools:189
 #: usr/bin/sltools:214 usr/bin/sltools:231 usr/bin/sltools:255
 msgid "Select the operation"
-msgstr "Sélectionnez l’opération"
+msgstr "Select the operation"
 
 #: usr/bin/sltools:191 usr/bin/sltools:199
 msgid "Start"
-msgstr "Début"
+msgstr "Start"
 
 #: usr/bin/sltools:192 usr/bin/sltools:200
 msgid "Stop"
-msgstr "Arrêter"
+msgstr "Stop"
 
 #: usr/bin/sltools:114
 msgid "To install manually visit the URL address: %s"
-msgstr "Pour installer manuellement, visitez l’adresse URL : %s"
+msgstr "To install manually visit the URL address: %s"
 
 #: usr/bin/sltools:236 usr/bin/sltools:243
 msgid "Uninstall"
-msgstr "Désinstaller"
+msgstr "Uninstall"
 
 #: usr/bin/sltools:195 usr/bin/sltools:203 usr/bin/sltools:234
 #: usr/bin/sltools:241
 msgid "Update"
-msgstr "Mettre à jour"
+msgstr "Update"
 
 #: usr/bin/sltools:90
 msgid "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools"
-msgstr "Certains binaires sont manquants:%s. V鲩fier les d鰥ndances sur https://github.com/ZarTek-Creole/slTools"
+msgstr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools"
 
 #: usr/bin/sltools:60
 msgid "sltools"

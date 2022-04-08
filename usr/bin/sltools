@@ -3,6 +3,7 @@
 VER=0.2
 DEBUG=0
 LOG=1
+
 function banner() {
     clear
     echo "
@@ -18,6 +19,20 @@ function banner() {
     echo "
                   Hi $(whoami), Welcome to the sl-Tools v$VER
     "
+    [[ ! -z "$1" ]] && SubBanner $*
+}
+SubBanner() {
+  echo "....................................................................."
+  display_center "$*"
+  echo "....................................................................."
+}
+display_center() {
+    local x
+    local y
+    text="$*"
+    x=$(( (70 - ${#text}) / 2))
+    echo -ne "\E[6n";read -sdR y; y=$(echo -ne "${y#*[}" | cut -d';' -f1)
+    echo -ne "\033[${y};${x}f$*\n"
 }
 # trap ctrl-c and call ctrl_c()
 trap ctrl_c INT
@@ -45,6 +60,7 @@ function m_tr {
     echo $(gettext sltools "$1") 
 }
 function Init() {
+    URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
     BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext"
     FILE_CONF=/etc/slftp/sltools.cfg
     FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
@@ -75,28 +91,27 @@ function Binary_Init() {
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
-    echo "oooook"
         error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp.")"
     fi
     if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
-        banner
+        banner "SLFTP"
         msg_sent "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
+        printf '\n'
         Install_SLFTP
     fi
-    sleep 5
     debug_sent "[OK] Binary_Init"
 }
 function Install_SLFTP() {
     debug_sent "[RUN] Install_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
-        "$(m_tr "Install SLFTP manually")" \
-        "$(m_tr "Install SLFTP automatically")" \
+        "$(m_tr "Install manually")" \
+        "$(m_tr "Install automatically")" \
         "$(m_tr "Quit")";
         do
             case $opt in
-                "$(m_tr "Install SLFTP automatically")") Install_FPC; sleep 2; Main_Menu; break;;
-                "$(m_tr "Install SLFTP manually")") break;;
+                "$(m_tr "Install automatically")") Install_FPC; Main_Menu; break;;
+                "$(m_tr "Install manually")") msg_sent "$(m_tr "To install manually visit the URL address: %s")" "${URL_SITE_SLFTP}"; exit 0;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") $REPLY";;
             esac
@@ -109,13 +124,13 @@ function Install_FPC() {
         error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp.")"
           PS3="$(m_tr "Select the operation"): "
         select opt in           \
-          "$(m_tr "Install FPC manually")" \
-            "$(m_tr "Install FPC automatically")" \
+          "$(m_tr "Install manually")" \
+            "$(m_tr "Install automatically")" \
           "$(m_tr "Quit")";
         do
             case $opt in
-                "$(m_tr "Install FPC automatically")") Install_FPC; sleep 2; Main_Menu; break;;
-                "$(m_tr "Install FPC manually")") break;;
+                "$(m_tr "Install automatically")") Install_FPC; sleep 2; Main_Menu; break;;
+                "$(m_tr "Install manually")") break;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") $REPLY";;
             esac
@@ -150,7 +165,7 @@ function FCT_Config_Set() {
 function FCT_Config_Check() {
     debug_sent "[RUN] FCT_Config_Check $*"
     # test comment
-    [[ ! -v "$1" ]] && msg_sent $(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s") "$1" $FILE_CONF && FCT_Config_Set "$1" 
+    [[ ! -v "$1" ]] && msg_sent "$(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s")" "$1" $FILE_CONF && FCT_Config_Set "$1" 
     debug_sent "[OK] FCT_Config_Check $*"
 }
 function Config_Init() {
@@ -169,22 +184,24 @@ function Config_Init() {
 
 function Menu_SLFTP
 {
-    banner
+    banner "Menu SLFTP"
     debug_sent "[RUN] Menu_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
-        "$(m_tr "Start slFTP")"       \
-        "$(m_tr "Join slFTP")"        \
-        "$(m_tr "Install slFTP")"     \
-        "$(m_tr "Update slFTP")"      \
-        "$(m_tr "Return Main")"      \
+        "$(m_tr "Start")"       \
+        "$(m_tr "Stop")"       \
+        "$(m_tr "Join")"        \
+        "$(m_tr "Install")"     \
+        "$(m_tr "Update")"      \
+        "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
         case $opt in
-            "$(m_tr "Start slFTP")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Join slFTP")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Install slFTP")") install_slftp; sleep 2; Main_Menu; break;;
-            "$(m_tr "Update slFTP")")  sleep 2; Main_Menu; break;;
-            "$(m_tr "Return Main")") Main_Menu; break;;
+            "$(m_tr "Start")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Stop")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Join")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Install")") install_slftp; sleep 2; Main_Menu; break;;
+            "$(m_tr "Update")")  sleep 2; Main_Menu; break;;
+            "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
@@ -192,16 +209,16 @@ function Menu_SLFTP
 }
 function Menu_FPC
 {
-    banner
+    banner "Free Pascal Compiler"
     debug_sent "[RUN] Menu_FPC"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
-        "$(m_tr "Install FPC")"       \
-        "$(m_tr "Return Main")"      \
+        "$(m_tr "Install")"       \
+        "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
         case $opt in
-            "$(m_tr "Install FPC")") Install_FPC; sleep 2; Main_Menu; break;;
-            "$(m_tr "Return Main")") Main_Menu; break;;
+            "$(m_tr "Install")") Install_FPC; sleep 2; Main_Menu; break;;
+            "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
@@ -209,23 +226,22 @@ function Menu_FPC
 }
 function SLTOOLS_Menu
 {
-    banner
+    banner "Menu SL-Tools"
     debug_sent "[RUN] SLTOOLS_Menu"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
-        "$(m_tr "Config slTools")"    \
-        "$(m_tr "Update slTools")"    \
-        "$(m_tr "Info slTools")"      \
-        "$(m_tr "Uninstall slTools")" \
-        "$(m_tr "Return Main")"       \
+        "$(m_tr "Config")"    \
+        "$(m_tr "Update")"    \
+        "$(m_tr "Info")"      \
+        "$(m_tr "Uninstall")" \
+        "$(m_tr "Back to main menu")"       \
         "$(m_tr "Quit")"; do
         case $opt in
-            "$(m_tr "Menu SLFTP")") Menu_SLFTP break;;
-            "$(m_tr "Config slTools")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Update slTool")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Info slTool")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Uninstall slTools")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Return Main")") Main_Menu; break;;
+            "$(m_tr "Config")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Update")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Info")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Uninstall")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
@@ -234,16 +250,18 @@ function SLTOOLS_Menu
 }
 function Main_Menu
 {
-    banner
+    banner "Menu main"
     debug_sent "[RUN] Main_Menu"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Menu SLFTP")"    \
         "$(m_tr "Menu SL-Tools")"    \
+        "$(m_tr "Menu cbFTP")"    \
         "$(m_tr "Quit")"; do
         case $opt in
             "$(m_tr "Menu SLFTP")") Menu_SLFTP break;;
             "$(m_tr "Menu SL-Tools")") SLTOOLS_Menu break;;
+            "$(m_tr "Menu cbFTP")") SLTOOLS_Menu break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
@@ -254,7 +272,7 @@ function Main_Menu
 usage() {                                 # Function: Print a help message.
   echo "Usage: $0 [ -n NAME ] [ -t TIMES ]" 1>&2 
 }
-testargs() {
+console_mode() {
    # [ "$1" = "--help" -o "$1" = "-h" ] && usage
    [[ $1 == "" ]] && return;
    echo "tessttt"
@@ -268,7 +286,7 @@ testargs() {
     done
     exit 0    
 }
-testargs "$@"
+console_mode "$@"
 # run sltools
 Init
 File_Init
