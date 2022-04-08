@@ -25,10 +25,10 @@
   - [Des outils pour FPC:](#des-outils-pour-fpc)
     - [Installation](#installation)
     - [Mise à jour](#mise-à-jour)
-  - [géneral](#general)
+  - [géneral](#géneral)
     - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
 - [SL-Tools dependancies](#sl-tools-dependancies)
-  - [List dependancies)](#list-dependancies)
+  - [List dependancies](#list-dependancies)
  
 # SL-Tools
 Programme écrit en bash pour avoir une gestion de slFTP (toolbox). 
@@ -68,7 +68,7 @@ Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [Et c'est part ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
 # SL-Tools dependancies 
-[List dependancies)](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L45)
+[List dependancies](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L64)
 ---
 ```
  ____|~\_      ____|~\_
