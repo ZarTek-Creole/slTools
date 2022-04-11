@@ -32,7 +32,7 @@
 * Programme écrit en bash
 * Un mode interative
 * Un mode commande de ligne (terminal)
-* Installation de FPC (Free Pascal Free)
+* Installation automatique de FPC (Free Pascal Free)
 * Installation (semi) automatique de slFTP
 * Gestions sous screen des instances slFTP
 ## Testé avec
@@ -44,6 +44,7 @@
 * Git
 * Screen
 * sudo
+* gettext
 ### Binaires
 * [Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L73)
 ## Téléchargements

@@ -70,7 +70,7 @@ m_tr() {
 }
 Init() {
     URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
-    BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext sudo su"
+    BINS_NEEDED="echo grep cut printf tr tar touch su screen sudo gettext git"
     FILE_CONF=/etc/slftp/sltools.cfg
     FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
