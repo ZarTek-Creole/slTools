@@ -1,11 +1,10 @@
 #!/usr/bin/bash
-#set -f -v -x
-VER=0.2
+VER=0.3
 DEBUG=0
 LOG=1
 
-function banner() {
-    clear
+banner() {
+    [ "$DEBUG" -ne 1 ] && clear
     echo "
            __         (█)    ( ▄▄▄▄(█)▄▄▄▄ )   ,---.         ( ) ▀     ▀ ( )
           |  \    ▄▄▄▄███▄▄▄▄ ▐░░░░░░░░░░░▌   ' S ,'\   \(/     \  ▀▀▀  /
@@ -36,58 +35,56 @@ display_center() {
 }
 # trap ctrl-c and call ctrl_c()
 trap ctrl_c INT
-function ctrl_c() {
+ctrl_c() {
     echo " ** CTRL-C ..."
     exit 1
 }
-function msg_sent {
+msg_sent () {
     # msg_sent "$msg" $value1 $value2 $value...
     # msg_sent 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
     printf  "[sl-TOOLS] $@"
     printf  "\n"
 }
 
-function error_sent {
+error_sent() {
     msg_sent  "$@"
-    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "$FILE_LOG"; fi
+    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
     exit 0
 }
-function debug_sent {
-    if [ "$DEBUG" = 1 ]; then msg_sent "[DEBUG] $@" && sleep 1; fi
-    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "$FILE_LOG"; fi
+debug_sent() {
+    if [ "$DEBUG" = 1 ]; then msg_sent "[DEBUG] $@" && sleep 0.2; fi
+    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
 }
-function m_tr { 
+m_tr() { 
     echo $(gettext sltools "$1") 
 }
-function Init() {
+Init() {
     URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
-    BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext"
+    BINS_NEEDED="echo grep basename cut sha256sum printf tr head tail tar git touch screen gettext sudo su"
     FILE_CONF=/etc/slftp/sltools.cfg
     FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
     debug_sent "[OK] Init"
 }
-function File_Init() {
-    debug_sent "[RUN] File_Init"
+File_Init() {
     [ ! -f "$FILE_CONF" ] && msg_sent $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ...") $FILE_CONF && mkdir -p "$(dirname "$FILE_CONF")" && touch "$FILE_CONF"
     source "$FILE_CONF"
     # Efface les anciens logs ...
-    [ -f "$FILE_LOG" ] && rm "$FILE_LOG"
-    debug_sent "[OK] File_Init"
+    [ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chown ${unix_user}.${unix_GROUP} "$FILE_LOG"
 }
-function Binary_Init() {
+Binary_Init() {
     debug_sent "[RUN] Binary_Init"
     # check for needed bins
-    for BIN in $BINS_NEEDED; do
-        if [[ "$(command -v "$BIN")" != "" ]]; then
-            debug_sent "[+] FOUND: $BIN"
+    for BIN in ${BINS_NEEDED}; do
+        if [ "$(command -v "${BIN}")" != "" ]; then
+            debug_sent "[+] FOUND: ${BIN}"
         else
-            debug_sent "[-] NOT FOUND: $BIN"
-            BINS_MISSING="$BINS_MISSING $BIN"
+            debug_sent "[-] NOT FOUND: ${BIN}"
+            BINS_MISSING="${BINS_MISSING} ${BIN}"
         fi
     done
-    if [ -n "$BINS_MISSING" ]; then
-        error_sent "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "$BINS_MISSING"
+    if [ -n "${BINS_MISSING}" ]; then
+        error_sent "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "${BINS_MISSING}"
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
@@ -97,12 +94,50 @@ function Binary_Init() {
         banner "SLFTP"
         msg_sent "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
         printf '\n'
-        Install_SLFTP
+        Missing_SLFTP
     fi
     debug_sent "[OK] Binary_Init"
 }
-function Install_SLFTP() {
-    debug_sent "[RUN] Install_SLFTP"
+Run_SLFTP_Internal() {
+    if [[ "$(screen -ls)" = *${slftp_screen_name}* ]]; then
+        error_sent "$(m_tr "(Err_001) slFTP: Already running.")"
+    else
+        screen_exec="screen -S ${slftp_screen_name} bash -c \"/usr/bin/sltools run slftp_internal\""
+        [ "$(whoami)" != "${unix_user} " ] && bash -c "su -l ${unix_user} -c "${screen_exec}"" || bash -c "${screen_exec}"
+        retVal=$?
+        [ ${retVal} -ne 0 ] && error_sent "$(m_tr "(Err_002) Error starting slftp screen.")"
+        echo "slFTP: exec \"${screen_exec}'\" done."
+        if [ ${slftp_restart_onfailure} == 1 ]; then 
+            while [ 0 == 0 ]; do
+                msg_sent "$(m_tr "Press [CTRL+C] to stop..")"
+                Run_SLFTP_Internal
+                ! [[ ${restart_wait} =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "restart_wait"
+                [ "${restart_wait}" != "0" ] && sleep ${restart_wait}
+            done
+        fi
+    fi
+}
+Run_SLFTP() {
+    [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]] && error_sent "$(m_tr "(Err_017) %s is missing.")" "${slftp_directory}"/"${slftp_binary_name}"
+    cd "${slftp_directory}" || exit
+    re='^[0-9]+$'
+    ! [[ ${start_reset_files} =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "start_reset_files"
+    [ "${reset_list}" != "" ] && rm -f "${reset_list}"
+    ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "slftp_restart_onfailure"
+    Run_SLFTP_Internal
+    exit 1
+}
+Install_SLFTP() {
+    [ ! -d "/opt/src/slftp" ] && error_sent "$(m_tr "(Err_017) %s is missing.")" "/opt/src/slftp"
+    cd /opt/src/slftp || exit
+    [[ ! -f "/opt/src/slftp/Makefile" ]] && error_sent "$(m_tr "(Err_018) Code source need update for %s.")" "SLFTP"
+    sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
+    [ ! -d "${slftp_directory}" ] && mkdir -p ${slftp_directory}
+    make -s || exit
+    make install || exit
+}
+Missing_SLFTP() {
+    debug_sent "[RUN] Missing_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Install manually")" \
@@ -110,16 +145,16 @@ function Install_SLFTP() {
         "$(m_tr "Quit")";
         do
             case $opt in
-                "$(m_tr "Install automatically")") Install_FPC; Main_Menu; break;;
+                "$(m_tr "Install automatically")") Install_SLFTP; sleep 2;;
                 "$(m_tr "Install manually")") msg_sent "$(m_tr "To install manually visit the URL address: %s")" "${URL_SITE_SLFTP}"; exit 0;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") $REPLY";;
             esac
         done
-    debug_sent "[OK] Install_SLFTP"
+    debug_sent "[OK] Missing_SLFTP"
 }
-function Install_FPC() {
-    debug_sent "[RUN] Install_FPC"
+Missing_FPC() {
+    debug_sent "[RUN] Missing_FPC"
     if [[ "$(command -v fpc)" == "" ]]; then
         error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp.")"
           PS3="$(m_tr "Select the operation"): "
@@ -129,16 +164,16 @@ function Install_FPC() {
           "$(m_tr "Quit")";
         do
             case $opt in
-                "$(m_tr "Install automatically")") Install_FPC; sleep 2; Main_Menu; break;;
+                "$(m_tr "Install automatically")") Missing_FPC; sleep 2; Main_Menu; break;;
                 "$(m_tr "Install manually")") break;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") $REPLY";;
             esac
         done
     fi
-    debug_sent "[OK] Install_FPC"
+    debug_sent "[OK] Missing_FPC"
 }
-function sent_to_cmd() {
+sent_to_cmd() {
     #       -S sessionname
     # When creating a new session, this option can be used to specify a meaningful name for the session. This name identifies the session for "screen -list" and "screen -r" actions. It substitutes the default [tty.host] suffix.
     #       -p number_or_name
@@ -148,7 +183,37 @@ function sent_to_cmd() {
     screen -S "$slftp_screen_name" -p 0 -X stuff "stop^M"
 }
 
-function FCT_Config_Set() {
+Account_Unix_Init() {
+    if FCT_group_unix_exists "${unix_group}"; then 
+        msg_sent "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_group}"; read -r create_group
+        case ${create_group} in
+            [YyoO]) FCT_create_group_unix;;
+            [Nn]) exit 1 ;;
+            *) FCT_create_group_unix;;
+        esac
+    fi
+    if FCT_user_unix_exists "${unix_user}"; then 
+        msg_sent "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_user}"; read -r create_user
+        case ${create_user} in
+            [YyoO]) FCT_create_user_unix;;
+            [Nn]) exit 1 ;;
+            *) FCT_create_user_unix;;
+        esac
+    fi
+}
+FCT_create_user_unix() {
+    sudo useradd "${unix_user}" -g "${unix_group}" -G sudo --create-home
+}
+FCT_create_group_unix() {
+    sudo addgroup "${unix_group}"
+}
+FCT_group_unix_exists() {
+    return "$(grep -c "$1" /etc/group)"
+}
+FCT_user_unix_exists() {
+    return "$(grep -c "$1" /etc/passwd)"
+}
+FCT_Config_Set() {
     debug_sent "[RUN] FCT_Config_Set $*"
     [ ! -f $FILE_CONF_DEF ] && echo "creation de $FILE_CONF_DEF" && touch $FILE_CONF_DEF
     [ ! -f $FILE_CONF ] && echo "creation de $FILE_CONF" && touch $FILE_CONF
@@ -162,13 +227,13 @@ function FCT_Config_Set() {
     [ "$(grep -c -w "$1=" $FILE_CONF )" = 0 ] && echo "$1"=\""$value"\" >> $FILE_CONF
     debug_sent "[OK] FCT_Config_Set $*"
 }
-function FCT_Config_Check() {
+FCT_Config_Check() {
     debug_sent "[RUN] FCT_Config_Check $*"
     # test comment
     [[ ! -v "$1" ]] && msg_sent "$(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s")" "$1" $FILE_CONF && FCT_Config_Set "$1" 
     debug_sent "[OK] FCT_Config_Check $*"
 }
-function Config_Init() {
+Config_Init() {
     debug_sent "[RUN] config"
     FCT_Config_Check "DEBUG"
     FCT_Config_Check "LOG"
@@ -182,13 +247,12 @@ function Config_Init() {
     debug_sent "[OK] config"
 }
 
-function Menu_SLFTP
-{
+Menu_SLFTP () {
     banner "Menu SLFTP"
     debug_sent "[RUN] Menu_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
-        "$(m_tr "Start")"       \
+        "$(m_tr "Run")"       \
         "$(m_tr "Stop")"       \
         "$(m_tr "Join")"        \
         "$(m_tr "Install")"     \
@@ -196,10 +260,10 @@ function Menu_SLFTP
         "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
         case $opt in
-            "$(m_tr "Start")") echo "soon"; sleep 2; Main_Menu; break;;
+            "$(m_tr "Run")") Run_SLFTP; sleep 2; Main_Menu; break;;
             "$(m_tr "Stop")") echo "soon"; sleep 2; Main_Menu; break;;
             "$(m_tr "Join")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Install")") install_slftp; sleep 2; Main_Menu; break;;
+            "$(m_tr "Install")") Install_SLFTP; sleep 2; Main_Menu; break;;
             "$(m_tr "Update")")  sleep 2; Main_Menu; break;;
             "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
@@ -207,25 +271,23 @@ function Menu_SLFTP
         esac
     done
 }
-function Menu_FPC
-{
+FPC_Menu () {
     banner "Free Pascal Compiler"
-    debug_sent "[RUN] Menu_FPC"
+    debug_sent "[RUN] FPC_Menu"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Install")"       \
         "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
         case $opt in
-            "$(m_tr "Install")") Install_FPC; sleep 2; Main_Menu; break;;
+            "$(m_tr "Install")") Missing_FPC; sleep 2; Main_Menu; break;;
             "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
     done
 }
-function SLTOOLS_Menu
-{
+SLTOOLS_Menu () {
     banner "Menu SL-Tools"
     debug_sent "[RUN] SLTOOLS_Menu"
     PS3="$(m_tr "Select the operation"): "
@@ -248,8 +310,7 @@ function SLTOOLS_Menu
     done
     debug_sent "[OK] SLTOOLS_Menu"
 }
-function Main_Menu
-{
+Main_Menu () {
     banner "Menu main"
     debug_sent "[RUN] Main_Menu"
     PS3="$(m_tr "Select the operation"): "
@@ -269,27 +330,39 @@ function Main_Menu
     debug_sent "[OK] Main_Menu"
 }
 # Terminal command
-usage() {                                 # Function: Print a help message.
-  echo "Usage: $0 [ -n NAME ] [ -t TIMES ]" 1>&2 
+console_usage() { 
+  msg_sent "Usage: $0 " 1>&2 
 }
-console_mode() {
-   # [ "$1" = "--help" -o "$1" = "-h" ] && usage
+console_run_usage() {
+    msg_sent "test -> $@"
+    
+}
+console_run() {
+    shift
+    [[ $1 == "" ]] && console_run_usage $@ && return
+    Config_Init
+    [[ $1 == "slftp" ]] && Run_SLFTP && return
+    [[ $1 == "slftp_internal" ]] && Run_SLFTP_Internal && return
+}
+console_main() {
+   [ "$1" = "--help" -o "$1" = "-h" ] && console_usage
    [[ $1 == "" ]] && return;
-   echo "tessttt"
-    while getopts ":n:t:" options; do 
-    echo "${options}"
+   [[ $1 == "run" ]] && console_run $@;
+    while getopts ":r:v" options; do 
         case "${options}" in
-            n) echo "${OPTARG}";;
-            :) return;;
-            *) usage;;
+            v) echo "Sl-Tools V${VER} @ https://github.com/ZarTek-Creole/slTools"; exit ;;
+            "r") echo "n = ${OPTARG}"; exit ;;
+            *) console_usage;;
         esac
     done
     exit 0    
 }
-console_mode "$@"
+
 # run sltools
 Init
 File_Init
 Config_Init
+Account_Unix_Init
 Binary_Init
+console_main "$@"
 Main_Menu

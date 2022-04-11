@@ -5,6 +5,10 @@ if [ $EUID == 1 ] then
 fi
 function run () {
     cd $slftp_directory
+    re='^[0-9]+$'
+    if [[ $start_reset_files =~ $re ]] ; then
+        echo "error: Not a number" >&2; exit 1.
+    fi
     sleep $restart_wait
     if [ $start_reset_files == 1 ] then 
         rm -f $reset_list

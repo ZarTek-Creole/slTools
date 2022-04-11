@@ -23,7 +23,7 @@ unix_group=slftp
 ####
 # redemarer slftp en cas de fermeture de l'application?
 slftp_restart_onfailure=1
-# combien de temps doit t'il attendre avant de redemmarer (secondes)?
+# combien de temps doit t'il attendre avant de redemmarer (secondes)? 0= no wait
 restart_wait=5
 # au (re)demarage faut-il reset les fichiers suivant ?
 # stats.db slftp.history stats.db slftp.kb slftp.log
