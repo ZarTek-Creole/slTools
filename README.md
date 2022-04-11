@@ -68,12 +68,12 @@ git clone https://github.com/ZarTek-Creole/slTools.git
 └> cp /etc/slftp/sltools.cfg.dist cp /etc/slftp/sltools.cfg
 └> nano /etc/slftp/sltools.cfg
 ```
-Vous êtes pret a utiliser stools
-## Mode Intreractif
+Vous êtes pret à utiliser stools
+## Mode Intéractif
 ```
 └> sltools
 ```
-Vous pouvez éxécuté sltools depuis n'importe quel dossier et utilisateur
+Vous pouvez éxécuter sltools depuis n'importe quel dossier et utilisateur
 ### Les menus
 #### Menu main
 ```
@@ -112,7 +112,7 @@ Sélectionnez l’opération:
 ```
 └> sltools -h
 ```
-Vous pouvez éxécuté sltools depuis n'importe quel dossier et utilisateur
+Vous pouvez éxécuter sltools depuis n'importe quel dossier et utilisateur
 
 # Vos besoins, suggestions, bugs: 
 N’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
