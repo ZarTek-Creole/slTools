@@ -33,7 +33,7 @@ unix_group=slftp
 # Redémarrer slftp en cas de fermeture de l'application? (valeur booléenne)
 slftp_restart_onfailure=1
 
-# Délai d'attente avant de redémmarer lors de la fermeture de slftp.
+# Délai d'attente avant de redémarrer lors de la fermeture de slftp.
 # Temps en secondes, 0 valant aucune attente
 restart_wait=5
 
