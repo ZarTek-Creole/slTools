@@ -4,7 +4,7 @@ DEBUG=0
 LOG=1
 
 banner() {
-    [ "$DEBUG" -ne 1 ] && clear
+    [ "${DEBUG}" -ne 1 ] && clear
     echo "
            __         (█)    ( ▄▄▄▄(█)▄▄▄▄ )   ,---.         ( ) ▀     ▀ ( )
           |  \    ▄▄▄▄███▄▄▄▄ ▐░░░░░░░░░░░▌   ' S ,'\   \(/     \  ▀▀▀  /
@@ -39,22 +39,32 @@ ctrl_c() {
     echo " ** CTRL-C ..."
     exit 1
 }
-msg_sent () {
-    # msg_sent "$msg" $value1 $value2 $value...
-    # msg_sent 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
+Sent_MSG () {
+    # Sent_MSG "$msg" $value1 $value2 $value...
+    # Sent_MSG 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
     printf  "[sl-TOOLS] $@"
     printf  "\n"
 }
 
-error_sent() {
-    msg_sent  "$@"
-    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
+Sent_Error() {
+    Sent_MSG  "$@"
+    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
     exit 0
 }
-debug_sent() {
-    if [ "$DEBUG" = 1 ]; then msg_sent "[DEBUG] $@" && sleep 0.2; fi
-    if [ "$LOG" = 1 ]; then msg_sent "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
+Sent_Debug() {
+    if [ "${DEBUG}" = 1 ]; then Sent_MSG "[DEBUG] $@" && sleep 0.2; fi
+    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
 }
+Sent_Command() {
+    #       -S sessionname
+    # When creating a new session, this option can be used to specify a meaningful name for the session. This name identifies the session for "screen -list" and "screen -r" actions. It substitutes the default [tty.host] suffix.
+    #       -p number_or_name
+    # Preselect a window. This is usefull when you want to reattach to a specific windor or you want to send a command via the "-X" option to a specific window. As with screen's select commant, "-" selects the blank window. As a special case for reattach, "=" brings up the windowlist on the blank windo
+    #       -X
+    # Send the specified command to a running screen session. You can use the -d or -r option to tell screen to look only for attached or detached screen sessions. Note that this command doesn't work if the session is password protected.
+    ${binary_screen} -S "${slftp_screen_name}" -p 0 -X stuff "stop^M"
+}
+
 m_tr() { 
     echo $(gettext sltools "$1") 
 }
@@ -64,80 +74,136 @@ Init() {
     FILE_CONF=/etc/slftp/sltools.cfg
     FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
-    debug_sent "[OK] Init"
+    Sent_Debug "[OK] Init"
 }
-File_Init() {
-    [ ! -f "$FILE_CONF" ] && msg_sent $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ...") $FILE_CONF && mkdir -p "$(dirname "$FILE_CONF")" && touch "$FILE_CONF"
-    source "$FILE_CONF"
+Init_Files() {
+    [ ! -f "${FILE_CONF}" ] && Sent_MSG $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ...") ${FILE_CONF} && mkdir -p "$(dirname "${FILE_CONF}")" && touch "${FILE_CONF}"
+    source "${FILE_CONF}"
     # Efface les anciens logs ...
     [ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chown ${unix_user}.${unix_GROUP} "$FILE_LOG"
 }
-Binary_Init() {
-    debug_sent "[RUN] Binary_Init"
+Init_Binary() {
+    Sent_Debug "[RUN] Init_Binary"
     # check for needed bins
     for BIN in ${BINS_NEEDED}; do
         if [ "$(command -v "${BIN}")" != "" ]; then
-            debug_sent "[+] FOUND: ${BIN}"
+            Sent_Debug "[+] FOUND: ${BIN}"
         else
-            debug_sent "[-] NOT FOUND: ${BIN}"
+            Sent_Debug "[-] NOT FOUND: ${BIN}"
             BINS_MISSING="${BINS_MISSING} ${BIN}"
         fi
     done
     if [ -n "${BINS_MISSING}" ]; then
-        error_sent "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "${BINS_MISSING}"
+        Sent_Error "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "${BINS_MISSING}"
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
-        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiler slftp.")"
+        Sent_Error "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiler slftp.")"
     fi
     if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
         banner "SLFTP"
-        msg_sent "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
+        Sent_MSG "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
         printf '\n'
         Missing_SLFTP
     fi
-    debug_sent "[OK] Binary_Init"
+    Sent_Debug "[OK] Init_Binary"
+}
+Config_Init() {
+    Sent_Debug "[RUN] config"
+    Config_Check_Value "DEBUG"
+    Config_Check_Value "LOG"
+    Config_Check_Value "slftp_binary_name"
+    Config_Check_Value "slftp_screen_name"
+    Config_Check_Value "slftp_restart_onfailure"
+    Config_Check_Value "slftp_directory"
+    Config_Check_Value "start_reset_files"
+    Config_Check_Value "unix_user"
+    Config_Check_Value "unix_group"
+    Config_Check_Value "slftp_wide_system"
+    Sent_Debug "[OK] config"
+}
+Config_Set_Value() {
+    Sent_Debug "[RUN] Config_Set_Value $*"
+    [ ! -f ${FILE_CONF}_DEF ] && echo "creation de ${FILE_CONF}_DEF" && touch ${FILE_CONF}_DEF
+    [ ! -f ${FILE_CONF} ] && echo "creation de ${FILE_CONF}" && touch ${FILE_CONF}
+    if [[ -f "${FILE_CONF}" && "$( grep -c -w "$1" ${FILE_CONF})" = 1 ]]; then
+	    value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
+    else
+        value_default=$(cat ${FILE_CONF}_DEF | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
+        Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ] : ")" "$1" "${value_default}"; read -r value
+    	[ "$value" = "" ] && value=${value_default}
+    fi
+    [ "$(grep -c -w "$1=" ${FILE_CONF} )" = 0 ] && echo "$1"=\""$value"\" >> ${FILE_CONF}
+    Sent_Debug "[OK] Config_Set_Value $*"
+}
+Config_Check_Value() {
+    Sent_Debug "[RUN] Config_Check_Value $*"
+    # test comment
+    [[ ! -v "$1" ]] && Sent_MSG "$(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s")" "$1" "${FILE_CONF}" && Config_Set_Value "$1" 
+    Sent_Debug "[OK] Config_Check_Value $*"
+}
+Init_Account_Unix() {
+    if Unix_Group_Exists "${unix_group}"; then 
+        Sent_MSG "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_group}"; read -r create_group
+        case ${create_group} in
+            [YyoO]) Unix_Group_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_Group_Create;;
+        esac
+    fi
+    if Unix_User_Exists "${unix_user}"; then 
+        Sent_MSG "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_user}"; read -r create_user
+        case ${create_user} in
+            [YyoO]) Unix_User_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_User_Create;;
+        esac
+    fi
 }
 Run_SLFTP_Internal() {
-    if [[ "$(screen -ls)" = *${slftp_screen_name}* ]]; then
-        error_sent "$(m_tr "(Err_001) slFTP: Already running.")"
+    if [[ "$(${binary_screen} -ls)" = *${slftp_screen_name}* ]]; then
+        Sent_Error "$(m_tr "(Err_001) slFTP: Already running.")"
     else
-        screen_exec="screen -S ${slftp_screen_name} bash -c \"/usr/bin/sltools run slftp_internal\""
+        screen_exec="${binary_screen} -S ${slftp_screen_name} bash -c \"/usr/bin/sltools run slftp_internal\""
         [ "$(whoami)" != "${unix_user} " ] && bash -c "su -l ${unix_user} -c "${screen_exec}"" || bash -c "${screen_exec}"
         retVal=$?
-        [ ${retVal} -ne 0 ] && error_sent "$(m_tr "(Err_002) Error starting slftp screen.")"
+        [ ${retVal} -ne 0 ] && Sent_Error "$(m_tr "(Err_002) Error starting slftp screen.")"
         echo "slFTP: exec \"${screen_exec}'\" done."
         if [ ${slftp_restart_onfailure} == 1 ]; then 
             while [ 0 == 0 ]; do
-                msg_sent "$(m_tr "Press [CTRL+C] to stop..")"
+                Sent_MSG "$(m_tr "Press [CTRL+C] to stop..")"
                 Run_SLFTP_Internal
-                ! [[ ${restart_wait} =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "restart_wait"
+                ! [[ ${restart_wait} =~ ${re} ]] && Sent_Error "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "restart_wait"
                 [ "${restart_wait}" != "0" ] && sleep ${restart_wait}
             done
         fi
     fi
 }
 Run_SLFTP() {
-    [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]] && error_sent "$(m_tr "(Err_017) %s is missing.")" "${slftp_directory}"/"${slftp_binary_name}"
+    [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]] && Sent_Error "$(m_tr "(Err_017) %s is missing.")" "${slftp_directory}"/"${slftp_binary_name}"
     cd "${slftp_directory}" || exit
     re='^[0-9]+$'
-    ! [[ ${start_reset_files} =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "start_reset_files"
+    ! [[ ${start_reset_files} =~ ${re} ]] && Sent_Error "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "start_reset_files"
     [ "${reset_list}" != "" ] && rm -f "${reset_list}"
-    ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && error_sent "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "slftp_restart_onfailure"
+    ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && Sent_Error "$(m_tr "(Err_020) Invalid value for option '%s' , check configuration file.")" "slftp_restart_onfailure"
     Run_SLFTP_Internal
     exit 1
 }
 Install_SLFTP() {
-    [ ! -d "/opt/src/slftp" ] && error_sent "$(m_tr "(Err_017) %s is missing.")" "/opt/src/slftp"
+    [ ! -d "/opt/src/slftp" ] && Sent_Error "$(m_tr "(Err_017) %s is missing.")" "/opt/src/slftp"
     cd /opt/src/slftp || exit
-    [[ ! -f "/opt/src/slftp/Makefile" ]] && error_sent "$(m_tr "(Err_018) Code source need update for %s.")" "SLFTP"
+    [[ ! -f "/opt/src/slftp/Makefile" ]] && Sent_Error "$(m_tr "(Err_018) Code source need update for %s.")" "SLFTP"
     sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
     [ ! -d "${slftp_directory}" ] && mkdir -p ${slftp_directory}
     make -s || exit
     make install || exit
+    [ "${slftp_wide_system}" = 1 ] && ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
+    export -f my_function
+su username -c "my_function"
 }
+
 Missing_SLFTP() {
-    debug_sent "[RUN] Missing_SLFTP"
+    Sent_Debug "[RUN] Missing_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Install manually")" \
@@ -146,17 +212,17 @@ Missing_SLFTP() {
         do
             case $opt in
                 "$(m_tr "Install automatically")") Install_SLFTP; sleep 2;;
-                "$(m_tr "Install manually")") msg_sent "$(m_tr "To install manually visit the URL address: %s")" "${URL_SITE_SLFTP}"; exit 0;;
+                "$(m_tr "Install manually")") Sent_MSG "$(m_tr "To install manually visit the URL address: %s")" "${URL_SITE_SLFTP}"; exit 0;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") $REPLY";;
             esac
         done
-    debug_sent "[OK] Missing_SLFTP"
+    Sent_Debug "[OK] Missing_SLFTP"
 }
 Missing_FPC() {
-    debug_sent "[RUN] Missing_FPC"
+    Sent_Debug "[RUN] Missing_FPC"
     if [[ "$(command -v fpc)" == "" ]]; then
-        error_sent "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp.")"
+        Sent_Error "$(m_tr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp.")"
           PS3="$(m_tr "Select the operation"): "
         select opt in           \
           "$(m_tr "Install manually")" \
@@ -171,85 +237,29 @@ Missing_FPC() {
             esac
         done
     fi
-    debug_sent "[OK] Missing_FPC"
-}
-sent_to_cmd() {
-    #       -S sessionname
-    # When creating a new session, this option can be used to specify a meaningful name for the session. This name identifies the session for "screen -list" and "screen -r" actions. It substitutes the default [tty.host] suffix.
-    #       -p number_or_name
-    # Preselect a window. This is usefull when you want to reattach to a specific windor or you want to send a command via the "-X" option to a specific window. As with screen's select commant, "-" selects the blank window. As a special case for reattach, "=" brings up the windowlist on the blank windo
-    #       -X
-    # Send the specified command to a running screen session. You can use the -d or -r option to tell screen to look only for attached or detached screen sessions. Note that this command doesn't work if the session is password protected.
-    screen -S "$slftp_screen_name" -p 0 -X stuff "stop^M"
+    Sent_Debug "[OK] Missing_FPC"
 }
 
-Account_Unix_Init() {
-    if FCT_group_unix_exists "${unix_group}"; then 
-        msg_sent "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_group}"; read -r create_group
-        case ${create_group} in
-            [YyoO]) FCT_create_group_unix;;
-            [Nn]) exit 1 ;;
-            *) FCT_create_group_unix;;
-        esac
-    fi
-    if FCT_user_unix_exists "${unix_user}"; then 
-        msg_sent "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_user}"; read -r create_user
-        case ${create_user} in
-            [YyoO]) FCT_create_user_unix;;
-            [Nn]) exit 1 ;;
-            *) FCT_create_user_unix;;
-        esac
-    fi
-}
-FCT_create_user_unix() {
+
+Unix_User_Create() {
     sudo useradd "${unix_user}" -g "${unix_group}" -G sudo --create-home
 }
-FCT_create_group_unix() {
-    sudo addgroup "${unix_group}"
-}
-FCT_group_unix_exists() {
-    return "$(grep -c "$1" /etc/group)"
-}
-FCT_user_unix_exists() {
+Unix_User_Exists() {
     return "$(grep -c "$1" /etc/passwd)"
 }
-FCT_Config_Set() {
-    debug_sent "[RUN] FCT_Config_Set $*"
-    [ ! -f $FILE_CONF_DEF ] && echo "creation de $FILE_CONF_DEF" && touch $FILE_CONF_DEF
-    [ ! -f $FILE_CONF ] && echo "creation de $FILE_CONF" && touch $FILE_CONF
-    if [[ -f "$FILE_CONF" && "$( grep -c -w "$1" $FILE_CONF)" = 1 ]]; then
-	    value=$(grep -w "$1" $FILE_CONF | cut -d "=" -f2 | tr -d "\"")
-    else
-        value_default=$(cat $FILE_CONF_DEF | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
-	    echo -n "Please enter the value for $1, default [ $value_default ] : " ; read -r value
-    	[ "$value" = "" ] && value=$value_default
-    fi
-    [ "$(grep -c -w "$1=" $FILE_CONF )" = 0 ] && echo "$1"=\""$value"\" >> $FILE_CONF
-    debug_sent "[OK] FCT_Config_Set $*"
+Unix_Group_Create() {
+    sudo addgroup "${unix_group}"
 }
-FCT_Config_Check() {
-    debug_sent "[RUN] FCT_Config_Check $*"
-    # test comment
-    [[ ! -v "$1" ]] && msg_sent "$(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s")" "$1" $FILE_CONF && FCT_Config_Set "$1" 
-    debug_sent "[OK] FCT_Config_Check $*"
+Unix_Group_Exists() {
+    return "$(grep -c "$1" /etc/group)"
 }
-Config_Init() {
-    debug_sent "[RUN] config"
-    FCT_Config_Check "DEBUG"
-    FCT_Config_Check "LOG"
-    FCT_Config_Check "slftp_binary_name"
-    FCT_Config_Check "slftp_screen_name"
-    FCT_Config_Check "slftp_restart_onfailure"
-    FCT_Config_Check "slftp_directory"
-    FCT_Config_Check "start_reset_files"
-    FCT_Config_Check "unix_user"
-    FCT_Config_Check "unix_group"
-    debug_sent "[OK] config"
-}
+
+
+
 
 Menu_SLFTP () {
     banner "Menu SLFTP"
-    debug_sent "[RUN] Menu_SLFTP"
+    Sent_Debug "[RUN] Menu_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Run")"       \
@@ -259,7 +269,7 @@ Menu_SLFTP () {
         "$(m_tr "Update")"      \
         "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
-        case $opt in
+        case ${opt} in
             "$(m_tr "Run")") Run_SLFTP; sleep 2; Main_Menu; break;;
             "$(m_tr "Stop")") echo "soon"; sleep 2; Main_Menu; break;;
             "$(m_tr "Join")") echo "soon"; sleep 2; Main_Menu; break;;
@@ -267,29 +277,29 @@ Menu_SLFTP () {
             "$(m_tr "Update")")  sleep 2; Main_Menu; break;;
             "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") $REPLY";;
+            *) echo "$(m_tr "Invalid option") ${REPLY}";;
         esac
     done
 }
-FPC_Menu () {
+Menu_FPC () {
     banner "Free Pascal Compiler"
-    debug_sent "[RUN] FPC_Menu"
+    Sent_Debug "[RUN] Menu_FPC"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Install")"       \
         "$(m_tr "Back to main menu")"      \
         "$(m_tr "Quit")"; do
-        case $opt in
+        case ${opt} in
             "$(m_tr "Install")") Missing_FPC; sleep 2; Main_Menu; break;;
             "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") $REPLY";;
+            *) echo "$(m_tr "Invalid option") ${REPLY}";;
         esac
     done
 }
-SLTOOLS_Menu () {
+Menu_slTools () {
     banner "Menu SL-Tools"
-    debug_sent "[RUN] SLTOOLS_Menu"
+    Sent_Debug "[RUN] Menu_slTools"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Config")"    \
@@ -308,11 +318,11 @@ SLTOOLS_Menu () {
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
     done
-    debug_sent "[OK] SLTOOLS_Menu"
+    Sent_Debug "[OK] Menu_slTools"
 }
 Main_Menu () {
     banner "Menu main"
-    debug_sent "[RUN] Main_Menu"
+    Sent_Debug "[RUN] Main_Menu"
     PS3="$(m_tr "Select the operation"): "
     select opt in           \
         "$(m_tr "Menu SLFTP")"    \
@@ -321,20 +331,20 @@ Main_Menu () {
         "$(m_tr "Quit")"; do
         case $opt in
             "$(m_tr "Menu SLFTP")") Menu_SLFTP break;;
-            "$(m_tr "Menu SL-Tools")") SLTOOLS_Menu break;;
-            "$(m_tr "Menu cbFTP")") SLTOOLS_Menu break;;
+            "$(m_tr "Menu SL-Tools")") Menu_slTools break;;
+            "$(m_tr "Menu cbFTP")") Menu_slTools break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") $REPLY";;
         esac
     done
-    debug_sent "[OK] Main_Menu"
+    Sent_Debug "[OK] Main_Menu"
 }
 # Terminal command
 console_usage() { 
-  msg_sent "Usage: $0 " 1>&2 
+  Sent_MSG "Usage: $0 " 1>&2 
 }
 console_run_usage() {
-    msg_sent "test -> $@"
+    Sent_MSG "test -> $@"
     
 }
 console_run() {
@@ -360,9 +370,9 @@ console_main() {
 
 # run sltools
 Init
-File_Init
+Init_Files
 Config_Init
-Account_Unix_Init
-Binary_Init
+Init_Account_Unix
+Init_Binary
 console_main "$@"
 Main_Menu
