@@ -8,8 +8,5 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Test
-      uses: zartek-creole/github-action-tester@master
-      with:
-        script: usr/bin/sltools test
+      - name: Checking out code
+        uses: actions/checkout@v2
