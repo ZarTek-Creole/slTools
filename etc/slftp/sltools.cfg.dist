@@ -15,31 +15,31 @@ binary_screen=/usr/bin/screen
 # Nous du fichier binaire de slftp (laissez par default)
 slftp_binary_name=slftp
 # 
-# Le nom du screen sous le quel il sera lancer
+# Le nom du screen sous lequel il sera lancé
 slftp_screen_name=slFTPScr
 
-# Repetoire slftp contenant les fichier de données.
+# Repetoire slftp contenant les fichiers de données.
 slftp_directory=/opt/slftp
 
-# Installation integrande comme commande systeme? (valeur booléenne)
+# Installation integrée comme commande systeme? (valeur booléenne)
 slftp_wide_system=1
 
-# Nom de l'utilisateur -avec les droits sudo- sous le quel les instances doivent être lancé.
+# Nom de l'utilisateur -avec les droits sudo- sous lequel les instances doivent être lancées.
 unix_user=slftp
 
-# Nom du group utilisateur avec droit sudo sous le quel les instances doivent être lancé.
+# Nom du groupe utilisateur avec droits sudo sous lequel les instances doivent être lancées.
 unix_group=slftp
 
-# Redemarer slftp en cas de fermeture de l'application? (valeur booléenne)
+# Redémarrer slftp en cas de fermeture de l'application? (valeur booléenne)
 slftp_restart_onfailure=1
 
-# combien de temps doit t'il attendre avant de redemmarer lors de la fermeture de slftp.
+# combien de temps doit t'il attendre avant de redémmarer lors de la fermeture de slftp.
 # Temps en secondes, 0 valant aucune attente
 restart_wait=5
 
-# au (re)demarage faut-il reset les fichiers suivant ?
+# au (re)démarage faut-il reset les fichiers suivants ?
 # stats.db slftp.history stats.db slftp.kb slftp.log
 start_reset_files=1
 
-# si start_reset_files est activé, reset_list contient la liste des fichiers a reset.
+# si start_reset_files est activé, reset_list contient la liste des fichiers à reset.
 reset_list="slftp.kb slftp.speedstats slftp.history slftp.renames precatcher.log slftp.log databases/*.db"
