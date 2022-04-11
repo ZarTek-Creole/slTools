@@ -45,7 +45,7 @@
 * Screen
 * sudo
 ### Binaires
-[Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L64)
+* [Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L73)
 ## Téléchargements
 ```
 git clone https://github.com/ZarTek-Creole/slTools.git
