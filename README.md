@@ -9,66 +9,117 @@
  ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
  \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----' _/  \_       ▀   ▀
 ```
-!!! | SL-Tools software in construction
+!!! | SL-Tools est en cours de réalisation
 - [SL-Tools](#sl-tools)
-  - [Des outils pour slFTP:](#des-outils-pour-slftp)
-    - [Installation de slFTP](#installation-de-slftp)
-    - [Lancement de slFTP](#lancement-de-slftp)
-    - [Joindre le screen slFTP](#joindre-le-screen-slftp)
-    - [Crash ou fermeture de slftp](#crash-ou-fermeture-de-slftp)
-    - [Mise à jour de slFTP](#mise-à-jour-de-slftp)
-  - [Des outils pour SL-Tools:](#des-outils-pour-sl-tools)
-    - [About sur SL-Tools](#about-sur-sl-tools)
-    - [Configuration de SL-Tools](#configuration-de-sl-tools)
-    - [Mise à jour de SL-Tools](#mise-à-jour-de-sl-tools)
-    - [Désinstallation de SL-Tools](#désinstallation-de-sl-tools)
-  - [Des outils pour FPC:](#des-outils-pour-fpc)
-    - [Installation](#installation)
-    - [Mise à jour](#mise-à-jour)
-  - [géneral](#géneral)
-    - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
-- [SL-Tools dependancies](#sl-tools-dependancies)
-  - [List dependancies](#list-dependancies)
+  - [Quelques points](#quelques-points)
+  - [Testé avec](#testé-avec)
+  - [Les dépendances](#les-dépendances)
+    - [Packages](#packages)
+    - [Binaires](#binaires)
+  - [Téléchargements](#téléchargements)
+  - [Installation](#installation)
+  - [Fichier de configuration](#fichier-de-configuration)
+  - [Mode Intreractif](#mode-intreractif)
+    - [Les menus](#les-menus)
+      - [Menu main](#menu-main)
+      - [Menu slFTP](#menu-slftp)
+      - [Menu slTools](#menu-sltools)
+  - [Mode Non-Intreractif](#mode-non-intreractif)
+- [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
  
 # SL-Tools
-Programme écrit en bash pour avoir une gestion de slFTP (toolbox). 
-## Des outils pour slFTP:
+## Quelques points
+* Programme écrit en bash
+* Un mode interative
+* Un mode commande de ligne (terminal)
+* Installation de FPC (Free Pascal Free)
+* Installation (semi) automatique de slFTP
+* Gestions sous screen des instances slFTP
+## Testé avec
+  * Debian GNU/Linux 11 (bullseye)
+  * Free Pascal Compiler version 3.2.0+dfsg-12 [2021/01/25] for x86_64
 
-### Installation de slFTP
-Installation automatisée de slFTP via sltools
-### Lancement de slFTP
-Lancement de slftp sous un screen unix viaSL-Tools pour pouvoir le joindre plus tard.
-Le screen est lancé sous un nom configurable
-### Joindre le screen slFTP
-Joint facilement le screen éxistant via sltools
-### Crash ou fermeture de slftp
-sl-tool permet de relancer slftp dans un screen lors d'un crash ou fermeture de celui-ci
-Cette option est configurable.
-### Mise à jour de slFTP
-SL-Tools permet de mettre facilement à jour slFTP, en allant chercher la derniere version,  en le recompillant et l'installant dans l'environement système
-## Des outils pour SL-Tools:
-### About sur SL-Tools
-Informations sur sl-ftp. Version, site web, aide ..
-### Configuration de SL-Tools
-Permet de configurer les options de SL-TOOLS et les composants
-### Mise à jour de SL-Tools
-SL-Tools peut se mettre à jour lui-même.
-### Désinstallation de SL-Tools
-Désinstallation propre de Sl-Tools.
-## Des outils pour FPC:
-### Installation
-Installation du compilateur pascal pour compiller les sources slftp.
-### Mise à jour
-Mise à jour facile du FPC (Free Pascal Compiler)
-## géneral
-### Vos besoins, suggestions, bugs: 
-n’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
+## Les dépendances  
+### Packages
+* Git
+* Screen
+* sudo
+### Binaires
+[Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L64)
+## Téléchargements
+```
+git clone https://github.com/ZarTek-Creole/slTools.git
+```
+## Installation
+```
+└> ./install.sh                                             
+*-----------------------------------------*
+* SL-Tools a été installé                 *
+* le répertoire de configuration se       *
+* trouve dans /etc/slftp et doit être     *
+* renommé en sltools.cfg                  *
+* Après vous pouvez éxécuter le programme *
+* Avec la commande sltools (root/user)    *
+*-----------------------------------------*
+```
+## Fichier de configuration
+```
+└> cp /etc/slftp/sltools.cfg.dist cp /etc/slftp/sltools.cfg
+└> nano /etc/slftp/sltools.cfg
+```
+Vous êtes pret a utiliser stools
+## Mode Intreractif
+```
+└> sltools
+```
+Vous pouvez éxécuté sltools depuis n'importe quel dossier et utilisateur
+### Les menus
+#### Menu main
+```
+.....................................................................
+                             Menu main
+.....................................................................
+1) Menu SLFTP
+2) Menu SL-Tools
+3) Menu cbFTP
+4) Quitter
+Sélectionnez l’opération: 
+```
+#### Menu slFTP
+```
+.....................................................................
+                             Menu SLFTP
+.....................................................................
+1) Run                       3) Rejoindre                 5) Mettre à jour             7) Quitter
+2) Arrêter                   4) Installer                 6) Retour au menu principal
+Sélectionnez l’opération: 
+```
+#### Menu slTools
+```
+.....................................................................
+                           Menu SL-Tools
+.....................................................................
+1) Configuration
+2) Mettre à jour
+3) Info
+4) Désinstaller
+5) Retour au menu principal
+6) Quitter
+Sélectionnez l’opération: 
+```
+## Mode Non-Intreractif
+```
+└> sltools -h
+```
+Vous pouvez éxécuté sltools depuis n'importe quel dossier et utilisateur
+
+# Vos besoins, suggestions, bugs: 
+N’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
 Si vous rapportez des bugs, donnez des idées d'amélioration vous aidez déjà le projet.
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [Et c'est part ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
-# SL-Tools dependancies 
-[List dependancies](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L64)
+
 ---
 ```
  ____|~\_      ____|~\_
