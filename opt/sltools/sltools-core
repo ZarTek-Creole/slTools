@@ -1,0 +1,25 @@
+#!/usr/bin/bash
+LOG=0
+source /opt/sltools/sltools-functions
+
+Run_SLFTP_Internal() {
+    cd ${slftp_directory} || exit
+    ./${slftp_binary_name}
+
+    if [ ${slftp_restart_onfailure} == 1 ]; then 
+        while [ 0 == 0 ]; do
+            $0 run
+            [ "${restart_wait}" != "0" ] && sleep ${restart_wait}
+        done
+    fi
+}
+console_main() {
+   [[ $1 == "run" ]] && Run_SLFTP_Internal;
+   exit
+}
+Init
+Init_Files
+Init_Config
+Init_Account_Unix
+Init_Binary
+console_main "$@"

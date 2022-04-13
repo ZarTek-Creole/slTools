@@ -1,0 +1,176 @@
+#!/usr/bin/bash
+DEBUG=0
+LOG=1
+VER=0.3
+m_tr() { 
+    echo $(gettext sltools "$1") 
+}
+
+banner() {
+    [ "${DEBUG}" -ne 1 ] && clear
+    echo "
+           __         (█)    ( ▄▄▄▄(█)▄▄▄▄ )   ,---.         ( ) ▀     ▀ ( )
+          |  \    ▄▄▄▄███▄▄▄▄ ▐░░░░░░░░░░░▌   ' S ,'\   \(/     \  ▀▀▀  /
+  _______ | ██   ▐░░░░░█░░░░░▌▐░█▀▀▀▀▀▀▀█░▌  / L /   |  /▄\    ▄    ▄▄▄▄
+ /       \| ██    ▀▀▀▀█░█▀▀▀▀ ▐░▌ ████▄ ▐░▌ . O ; ,. :  |█|   ▀▄▀  █     ▀▄
+|  ██-█▀█▄| ██        ▐░▌     ▐░▌ █   █ ▐░▌ ' O | |: :  |█|____ ▄  ▀▀▀▀▄  L
+ \▀█▄   \ | ██   ██   ▐░▌     ▐░▌ ▀████ ▐░▌ ' T | .; :  \█▀▀███| ▀▄▄▄▄▀    
+  \█ ▄███\| ██        ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌ | L :    |  :/ /::::  ▄   ▄
+ ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
+ \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_       ▀   ▀"
+    echo "
+                  Hi $(whoami), Welcome to the sl-Tools v$VER
+    "
+    [[ ! -z "$1" ]] && SubBanner $*
+}
+
+SubBanner() {
+  echo "....................................................................."
+  display_center "$*"
+  echo "....................................................................."
+}
+
+display_center() {
+    local x
+    local y
+    text="$*"
+    x=$(( (70 - ${#text}) / 2))
+    echo -ne "\E[6n";read -sdR y; y=$(echo -ne "${y#*[}" | cut -d';' -f1)
+    echo -ne "\033[${y};${x}f$*\n"
+}
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+ctrl_c() {
+    echo " ** CTRL-C ..."
+    exit 1
+}
+
+Sent_MSG () {
+    # Sent_MSG "$msg" $value1 $value2 $value...
+    # Sent_MSG 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
+    printf  "[sl-TOOLS] $@"
+    printf  "\n"
+}
+
+Sent_Error() {
+    Sent_MSG  "$@"
+    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
+    exit 0
+}
+
+Sent_Debug() {
+    if [ "${DEBUG}" = 1 ]; then Sent_MSG "[DEBUG] $@" && sleep 0.2; fi
+    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
+}
+
+Init() {
+    URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
+    BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git"
+    FILE_CONF=/etc/slftp/sltools.cfg
+    FILE_CONF_DEF=/etc/slftp/sltools.cfg.dist
+    FILE_LOG=/var/log/sltools.log
+    Sent_Debug "[OK] Init"
+}
+
+Init_Files() {
+    [ ! -f "${FILE_CONF}" ] && Sent_MSG $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ...") ${FILE_CONF} && mkdir -p "$(dirname "${FILE_CONF}")" && touch "${FILE_CONF}"
+    source "${FILE_CONF}"
+    # Efface les anciens logs ...
+    [ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG"
+}
+
+Init_Binary() {
+    Sent_Debug "[RUN] Init_Binary"
+    # check for needed bins
+    for BIN in ${BINS_NEEDED}; do
+        if [ "$(command -v "${BIN}")" != "" ]; then
+            Sent_Debug "[+] FOUND: ${BIN}"
+        else
+            Sent_Debug "[-] NOT FOUND: ${BIN}"
+            BINS_MISSING="${BINS_MISSING} ${BIN}"
+        fi
+    done
+    if [ -n "${BINS_MISSING}" ]; then
+        Sent_Error "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "${BINS_MISSING}"
+
+    fi
+    if [[ "$(command -v fpc)" == "" ]]; then
+        Sent_Error "$(m_tr "(Err_015) FPC (Free Pascal Compiler) is missing to compiler slftp.")"
+    fi
+    if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
+        banner "SLFTP"
+        Sent_MSG "$(m_tr "(Err_016) %s is missing.")" "${slftp_binary_name}"
+        printf '\n'
+        Missing_SLFTP
+    fi
+    Sent_Debug "[OK] Init_Binary"
+}
+
+Init_Config() {
+    Sent_Debug "[RUN] config"
+    Config_Check_Value "DEBUG"
+    Config_Check_Value "LOG"
+    Config_Check_Value "slftp_binary_name"
+    Config_Check_Value "slftp_screen_name"
+    Config_Check_Value "slftp_restart_onfailure"
+    Config_Check_Value "slftp_directory"
+    Config_Check_Value "start_reset_files"
+    Config_Check_Value "unix_user"
+    Config_Check_Value "unix_group"
+    Config_Check_Value "slftp_wide_system"
+    Sent_Debug "[OK] config"
+}
+
+Config_Set_Value() {
+    Sent_Debug "[RUN] Config_Set_Value $*"
+    [ ! -f ${FILE_CONF_DEF} ] && echo "creation de ${FILE_CONF_DEF}" && touch ${FILE_CONF_DEF}
+    [ ! -f ${FILE_CONF} ] && echo "creation de ${FILE_CONF}" && touch ${FILE_CONF}
+    if [[ -f "${FILE_CONF}" && "$( grep -c -w "$1" ${FILE_CONF})" = 1 ]]; then
+	    value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
+    else
+        value_default=$(cat ${FILE_CONF_DEF} | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
+        Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ] : ")" "$1" "${value_default}"; read -r value
+    	[ "$value" = "" ] && value=${value_default}
+    fi
+    [ "$(grep -c -w "$1=" ${FILE_CONF} )" = 0 ] && echo "$1"=\""$value"\" >> ${FILE_CONF}
+    Sent_Debug "[OK] Config_Set_Value $*"
+}
+
+Config_Check_Value() {
+    Sent_Debug "[RUN] Config_Check_Value $*"
+    # test comment
+    [[ ! -v "$1" ]] && Sent_MSG "$(m_tr "(Err_005) The configuration of '%s=Value' is missing in %s")" "$1" "${FILE_CONF}" && Config_Set_Value "$1" 
+    Sent_Debug "[OK] Config_Check_Value $*"
+}
+
+Init_Account_Unix() {
+    if Unix_Group_Exists "${unix_group}"; then 
+        Sent_MSG "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_group}"; read -r create_group
+        case ${create_group} in
+            [YyoO]) Unix_Group_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_Group_Create;;
+        esac
+    fi
+    if Unix_User_Exists "${unix_user}"; then 
+        Sent_MSG "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :")" "${unix_user}"; read -r create_user
+        case ${create_user} in
+            [YyoO]) Unix_User_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_User_Create;;
+        esac
+    fi
+}
+Unix_User_Create() {
+    sudo useradd "${unix_user}" -g "${unix_group}" -G sudo --create-home
+}
+Unix_User_Exists() {
+    return "$(grep -c "$1" /etc/passwd)"
+}
+Unix_Group_Create() {
+    sudo addgroup "${unix_group}"
+}
+Unix_Group_Exists() {
+    return "$(grep -c "$1" /etc/group)"
+}
