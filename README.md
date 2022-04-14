@@ -19,7 +19,7 @@
   - [Téléchargements](#téléchargements)
   - [Installation](#installation)
   - [Fichier de configuration](#fichier-de-configuration)
-  - [Mode Intreractif](#mode-intreractif)
+  - [Mode Intéractif](#mode-intreractif)
     - [Les menus](#les-menus)
       - [Menu main](#menu-main)
       - [Menu slFTP](#menu-slftp)
