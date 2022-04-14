@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-LOG=0
 source /opt/sltools/sltools-functions
 
 Run_SLFTP_Internal() {

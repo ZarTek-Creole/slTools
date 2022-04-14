@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 	install -m 755 -d /opt/sltools
 	install -m 755                          \
-        opt/sltools/sltools_join.sh         \
-        opt/sltools/sltools_run_screen.sh   \
-        opt/sltools/sltools_run_slftp.sh    \
-        opt/sltools/sltools_run.sh          \
         opt/sltools/sltools			        \
         opt/sltools/sltools-core	        \
         opt/sltools/sltools-functions       \
-        /opt/sltools/;
+        /opt/sltools
+
 	install -m 755 -d /etc/slftp
 	install -m 755                  \
         etc/slftp/sltools.cfg.dist  \
         /etc/slftp/
+
 	[ -L /usr/bin/sltools ] && unlink /usr/bin/sltools
 	ln -s /opt/sltools/sltools /usr/bin/
+
 	[ -L /usr/bin/sltools-core ] && unlink /usr/bin/sltools-core
 	ln -s /opt/sltools/sltools-core /usr/bin/
 
@@ -23,9 +22,10 @@
 	cp -r opt/src/slftp /opt/src/
 
 	touch /var/log/sltools.log
+	chmod 755 /var/log/sltools.log
 
 
-	cd locale
+	cd locale || exit
 	for translation in */LC_MESSAGES/sltools.mo; do
 		LOCALE=$(echo -n "$translation" | cut -d/ -f1)
 		install -Dm 644 "$LOCALE/LC_MESSAGES/sltools.mo" "/usr/share/locale/$LOCALE/LC_MESSAGES/"
