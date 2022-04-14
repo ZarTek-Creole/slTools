@@ -24,7 +24,7 @@
       - [Menu main](#menu-main)
       - [Menu slFTP](#menu-slftp)
       - [Menu slTools](#menu-sltools)
-  - [Mode Non-Intreractif](#mode-non-intreractif)
+  - [Mode Non-Intéractif](#mode-non-intreractif)
 - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
  
 # SL-Tools
@@ -108,7 +108,7 @@ Sélectionnez l’opération:
 6) Quitter
 Sélectionnez l’opération: 
 ```
-## Mode Non-Intreractif
+## Mode Non-Intéractif
 ```
 └> sltools -h
 ```
