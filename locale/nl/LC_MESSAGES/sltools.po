@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sltools 0.0.1\n"
 "Report-Msgid-Bugs-To: ZarTeK.Creole@GMail.com\n"
-"POT-Creation-Date: 2022-04-08 22:04+0000\n"
-"PO-Revision-Date: 2022-04-09 00:06+0200\n"
+"POT-Creation-Date: 2022-04-14 21:11+0000\n"
+"PO-Revision-Date: 2022-04-14 23:24+0200\n"
 "Last-Translator: z\n"
 "Language-Team: none\n"
 "Language: nl\n"
@@ -18,128 +18,168 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: usr/bin/sltools:72
+#: opt/sltools/sltools:18
+#, fuzzy
+msgid "(Err_001) slFTP: Already running."
+msgstr "(Err_001) slFTP: Werkt al."
+
+#: opt/sltools/sltools:22
+#, fuzzy
+msgid "(Err_002) Error starting slftp screen."
+msgstr "(Err_002) Fout bij het starten van het slftp-scherm."
+
+#: opt/sltools/sltools-functions:77
 #, fuzzy
 msgid "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..."
 msgstr "(Err_004) Het volgende SL-Tools bestand ontbreekt: '%s'. Het maken van het bestand ..."
 
-#: usr/bin/sltools:168
+#: opt/sltools/sltools-functions:143
 #, fuzzy
 msgid "(Err_005) The configuration of '%s=Value' is missing in %s"
 msgstr "(Err_005) De configuratie '%s=Waarde' ontbreekt in %s"
 
-#: usr/bin/sltools:124
+#: opt/sltools/sltools:70
 #, fuzzy
-msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
-msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiller slftp."
+msgid "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp."
+msgstr "(Err_015) FPC (Free Pascal Compiler) est manquant pour compiler slftp."
 
-#: usr/bin/sltools:94
+#: opt/sltools/sltools-functions:99
 #, fuzzy
-msgid "(Err_015) FPC (Free Pascal Compiler) is missing to compiller slftp."
-msgstr "(Err_015) FPC (Free Pascal Compiler) ontbreekt om slftp te compenseren."
+msgid "(Err_015) FPC (Free Pascal Compiler) is missing to compiler slftp."
+msgstr "(Err_015) FPC (Free Pascal Compiler) ontbreekt om slftp te compileren."
 
-#: usr/bin/sltools:98
+#: opt/sltools/sltools-functions:103
 #, fuzzy
 msgid "(Err_016) %s is missing."
 msgstr "(Err_016) %s ontbreekt."
 
-#: usr/bin/sltools:196 usr/bin/sltools:204 usr/bin/sltools:217
-#: usr/bin/sltools:221 usr/bin/sltools:237 usr/bin/sltools:244
+#: opt/sltools/sltools:27 opt/sltools/sltools:38
+#, fuzzy
+msgid "(Err_017) %s is missing."
+msgstr "(Err_017) %s ontbreekt."
+
+#: opt/sltools/sltools:40
+#, fuzzy
+msgid "(Err_018) Code source need update for %s."
+msgstr "(Err_018) Codebron moet worden bijgewerkt voor %s."
+
+#: opt/sltools/sltools:30 opt/sltools/sltools:32
+#, fuzzy
+msgid "(Err_020) Invalid value for option '%s' , check configuration file."
+msgstr "(Err_020) Ongeldige waarde voor optie '%s' , controleer het configuratiebestand."
+
+#: opt/sltools/sltools:100 opt/sltools/sltools:108 opt/sltools/sltools:120
+#: opt/sltools/sltools:124 opt/sltools/sltools:139 opt/sltools/sltools:146
 msgid "Back to main menu"
 msgstr "Terug naar hoofdmenu"
 
-#: usr/bin/sltools:233 usr/bin/sltools:240
+#: opt/sltools/sltools:135 opt/sltools/sltools:142
 msgid "Config"
 msgstr "Configureer"
 
-#: usr/bin/sltools:235 usr/bin/sltools:242
+#: opt/sltools/sltools:137 opt/sltools/sltools:144
 msgid "Info"
 msgstr "Info"
 
-#: usr/bin/sltools:194 usr/bin/sltools:202 usr/bin/sltools:216
-#: usr/bin/sltools:220
+#: opt/sltools/sltools:98 opt/sltools/sltools:106 opt/sltools/sltools:119
+#: opt/sltools/sltools:123
 msgid "Install"
 msgstr "Installeer"
 
-#: usr/bin/sltools:109 usr/bin/sltools:113 usr/bin/sltools:128
-#: usr/bin/sltools:132
+#: opt/sltools/sltools:54 opt/sltools/sltools:58 opt/sltools/sltools:74
+#: opt/sltools/sltools:78
 #, fuzzy
 msgid "Install automatically"
 msgstr "Automatisch installeren"
 
-#: usr/bin/sltools:108 usr/bin/sltools:114 usr/bin/sltools:127
-#: usr/bin/sltools:133
+#: opt/sltools/sltools:53 opt/sltools/sltools:59 opt/sltools/sltools:73
+#: opt/sltools/sltools:79
 #, fuzzy
 msgid "Install manually"
 msgstr "Handmatig installeren"
 
-#: usr/bin/sltools:116 usr/bin/sltools:135 usr/bin/sltools:206
-#: usr/bin/sltools:223 usr/bin/sltools:246 usr/bin/sltools:266
+#: opt/sltools/sltools:61 opt/sltools/sltools:81 opt/sltools/sltools:110
+#: opt/sltools/sltools:126 opt/sltools/sltools:148 opt/sltools/sltools:168
 #, fuzzy
 msgid "Invalid option"
 msgstr "Ongeldige optie"
 
-#: usr/bin/sltools:193 usr/bin/sltools:201
+#: opt/sltools/sltools:97 opt/sltools/sltools:105
 msgid "Join"
 msgstr "Lid worden"
 
-#: usr/bin/sltools:258 usr/bin/sltools:263
+#: opt/sltools/sltools:160 opt/sltools/sltools:165
 #, fuzzy
 msgid "Menu SL-Tools"
 msgstr "Menu SL-Tools"
 
-#: usr/bin/sltools:257 usr/bin/sltools:262
+#: opt/sltools/sltools:159 opt/sltools/sltools:164
 #, fuzzy
 msgid "Menu SLFTP"
 msgstr "Menu SLFTP"
 
-#: usr/bin/sltools:259 usr/bin/sltools:264
+#: opt/sltools/sltools:161 opt/sltools/sltools:166
 #, fuzzy
 msgid "Menu cbFTP"
 msgstr "Menu cbFTP"
 
-#: usr/bin/sltools:110 usr/bin/sltools:115 usr/bin/sltools:129
-#: usr/bin/sltools:134 usr/bin/sltools:197 usr/bin/sltools:205
-#: usr/bin/sltools:218 usr/bin/sltools:222 usr/bin/sltools:238
-#: usr/bin/sltools:245 usr/bin/sltools:260 usr/bin/sltools:265
+#: opt/sltools/sltools-functions:133
+#, fuzzy
+msgid "Please enter the value for %s, default [ %s ] : "
+msgstr "Voer de waarde in voor %s, standaard [ %s ] : "
+
+#: opt/sltools/sltools:55 opt/sltools/sltools:60 opt/sltools/sltools:75
+#: opt/sltools/sltools:80 opt/sltools/sltools:101 opt/sltools/sltools:109
+#: opt/sltools/sltools:121 opt/sltools/sltools:125 opt/sltools/sltools:140
+#: opt/sltools/sltools:147 opt/sltools/sltools:162 opt/sltools/sltools:167
 #, fuzzy
 msgid "Quit"
 msgstr "Beenden"
 
-#: usr/bin/sltools:106 usr/bin/sltools:125 usr/bin/sltools:189
-#: usr/bin/sltools:214 usr/bin/sltools:231 usr/bin/sltools:255
+#: opt/sltools/sltools:95 opt/sltools/sltools:103
+msgid "Run"
+msgstr "Uitvoeren"
+
+#: opt/sltools/sltools:51 opt/sltools/sltools:71 opt/sltools/sltools:93
+#: opt/sltools/sltools:117 opt/sltools/sltools:133 opt/sltools/sltools:157
 #, fuzzy
 msgid "Select the operation"
 msgstr "Selecteer de bewerking"
 
-#: usr/bin/sltools:191 usr/bin/sltools:199
-msgid "Start"
-msgstr "Start"
-
-#: usr/bin/sltools:192 usr/bin/sltools:200
+#: opt/sltools/sltools:96 opt/sltools/sltools:104
 msgid "Stop"
 msgstr "Stop"
 
-#: usr/bin/sltools:114
+#: opt/sltools/sltools-functions:149
+#, fuzzy
+msgid "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :"
+msgstr "De unix groep '%s' bestaat niet, wil je deze maken? [Y]es [N]o, default Y :"
+
+#: opt/sltools/sltools-functions:157
+#, fuzzy
+msgid "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :"
+msgstr "De unix gebruiker '%s' bestaat niet, wil je deze maken? [Y]es [N]o, default Y :"
+
+#: opt/sltools/sltools:59
 #, fuzzy
 msgid "To install manually visit the URL address: %s"
 msgstr "Als u handmatig wilt installeren, gaat u naar het URL-adres: %s"
 
-#: usr/bin/sltools:236 usr/bin/sltools:243
+#: opt/sltools/sltools:138 opt/sltools/sltools:145
 msgid "Uninstall"
 msgstr "Deinstallatie"
 
-#: usr/bin/sltools:195 usr/bin/sltools:203 usr/bin/sltools:234
-#: usr/bin/sltools:241
+#: opt/sltools/sltools:99 opt/sltools/sltools:107 opt/sltools/sltools:136
+#: opt/sltools/sltools:143
 msgid "Update"
 msgstr "Bijwerken"
 
-#: usr/bin/sltools:90
+#: opt/sltools/sltools-functions:95
 #, fuzzy
 msgid "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools"
 msgstr "[!] Sommige binaire bestanden ontbreken:%s. Afhankelijkheden van https://github.com/ZarTek-Creole/slTools controleren"
 
-#: usr/bin/sltools:60
+#: opt/sltools/sltools-functions:6
 #, fuzzy
 msgid "sltools"
 msgstr "sltools"

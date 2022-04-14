@@ -7,8 +7,7 @@ echo "Generating translation template..."
 cd $(dirname $0)/..
 directory=$PWD
 # xgettext will be used on all sh files
-find ./ -type f -name '*.sh' | sort -d -f > locale/POTFILES.in
-echo "./usr/bin/sltools" >> locale/POTFILES.in
+find ./opt/sltools -type f  | sort -d -f > locale/POTFILES.in
 xgettext \
     --language=Shell \
     --files-from=locale/POTFILES.in \
