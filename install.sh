@@ -22,12 +22,13 @@
 	cp -r opt/src/slftp /opt/src/
 
 	touch /var/log/sltools.log
-	chmod 755 /var/log/sltools.log
+	chmod 0666 /var/log/sltools.log
 
 
 	cd locale || exit
-	for translation in */LC_MESSAGES/sltools.mo; do
+	for translation in "*/LC_MESSAGES/sltools.mo"; do
 		LOCALE=$(echo -n "$translation" | cut -d/ -f1)
+		echo "Install locale : $translation"
 		install -Dm 644 "$LOCALE/LC_MESSAGES/sltools.mo" "/usr/share/locale/$LOCALE/LC_MESSAGES/"
 	done
 
