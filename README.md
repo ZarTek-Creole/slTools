@@ -31,10 +31,10 @@
 ## Quelques points
 * Programme écrit en bash
 * Un mode interative
-* Un mode commande de ligne (terminal)
+* Un mode en ligne de commande (terminal)
 * Installation automatique de FPC (Free Pascal Free)
 * Installation (semi) automatique de slFTP
-* Gestions sous screen des instances slFTP
+* Gestion sous screen des instances slFTP
 ## Testé avec
   * Debian GNU/Linux 11 (bullseye)
   * Free Pascal Compiler version 3.2.0+dfsg-12 [2021/01/25] for x86_64
@@ -68,7 +68,7 @@ git clone https://github.com/ZarTek-Creole/slTools.git
 └> cp /etc/slftp/sltools.cfg.dist cp /etc/slftp/sltools.cfg
 └> nano /etc/slftp/sltools.cfg
 ```
-Vous êtes pret à utiliser stools
+Vous êtes prêt à utiliser stools
 ## Mode Intéractif
 ```
 └> sltools
