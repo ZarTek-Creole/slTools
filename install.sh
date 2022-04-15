@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+# Exit on error:
 set -o errexit
+# exit on fail variable
+set -o nounset
 	install -m 755 -d /opt/sltools
 	install -m 755                          \
         opt/sltools/sltools			        \
