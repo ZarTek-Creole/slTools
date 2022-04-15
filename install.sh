@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -o errexit
 	install -m 755 -d /opt/sltools
 	install -m 755                          \
         opt/sltools/sltools			        \
