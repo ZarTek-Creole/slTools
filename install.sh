@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 	install -m 755 -d /opt/sltools
 	install -m 755                          \
         opt/sltools/sltools			        \
@@ -25,11 +26,10 @@
 	chmod 0666 /var/log/sltools.log
 
 
-	cd locale || exit
-	for translation in "*/LC_MESSAGES/sltools.mo"; do
-		LOCALE=$(echo -n "$translation" | cut -d/ -f1)
-		echo "Install locale : $translation"
-		install -Dm 644 "$LOCALE/LC_MESSAGES/sltools.mo" "/usr/share/locale/$LOCALE/LC_MESSAGES/"
+	
+	for LOCALE in $(find locale/ -name sltools.mo | cut -d/ -f2); do
+		echo "Install locale : ${LOCALE}"
+		install -Dm 644 "./locale/${LOCALE}/LC_MESSAGES/sltools.mo" "/usr/share/locale/${LOCALE}/LC_MESSAGES/"
 	done
 
 
