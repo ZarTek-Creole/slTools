@@ -53,7 +53,7 @@ git clone https://github.com/ZarTek-Creole/slTools.git
 ```
 ## Installation
 ```
-└> ./install.sh                                             
+└> sudo ./install.sh                                             
 *-----------------------------------------*
 * SL-Tools a été installé                 *
 * le répertoire de configuration se       *
