@@ -118,7 +118,7 @@ Vous pouvez éxécuter sltools depuis n'importe quel dossier et utilisateur
 N’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
 Si vous rapportez des bugs, donnez des idées d'amélioration vous aidez déjà le projet.
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
-[Et c'est part ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
+[Et c'est par ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
 
 ---
