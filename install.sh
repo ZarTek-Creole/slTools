@@ -4,7 +4,7 @@ set -o errexit
 # exit on fail variable
 set -o nounset
 
-echo "SL-Tools Install"
+echo "Installing SL-Tools"
 # intsall sltools 
 install -m 755 -d /opt/sltools
 install -m 755                          \
