@@ -4,6 +4,9 @@ set -o errexit
 # exit on fail variable
 set -o nounset
 
+# Make sure only root can run our script
+[[ $EUID -ne 0 ]] && echo -e "[Error] This script must be run as root!" && exit 1
+
 echo "Installing SL-Tools"
 # intsall sltools 
 install -m 755 -d /opt/sltools
@@ -38,7 +41,11 @@ chmod 0666 /var/log/sltools.log
 
 echo "SL-Tools install pack languages"
 for LOCALE in $(find locale/ -name sltools.mo | cut -d/ -f2); do
+	[ ! -d "/usr/share/locale/${LOCALE}/LC_MESSAGES/" ] && continue
 	echo "Install language: ${LOCALE}"
 	install -Dm 644 "./locale/${LOCALE}/LC_MESSAGES/sltools.mo" "/usr/share/locale/${LOCALE}/LC_MESSAGES/"
 done
 echo "SL-Tools Successful installation"
+echo "done."
+
+exit 0

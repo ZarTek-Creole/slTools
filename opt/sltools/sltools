@@ -200,8 +200,8 @@ console_main() {
    [[ $1 == "run" ]] && console_run $@;
     while getopts ":r:v" options; do 
         case "${options}" in
-            v) echo "Sl-Tools V${VER} @ https://github.com/ZarTek-Creole/slTools"; exit ;;
-            "r") echo "n = ${OPTARG}"; exit ;;
+            v) Sent_MSG "$(m_tr "Sl-Tools, current version V%s. Website: %s" "${VER}" "${URL_SLTOOLS}")"; exit ;;
+            "r") Sent_MSG "n = ${OPTARG}"; exit ;;
             *) console_usage;;
         esac
     done

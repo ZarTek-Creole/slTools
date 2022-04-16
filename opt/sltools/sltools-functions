@@ -77,6 +77,7 @@ Sent_Debug() {
 }
 
 Init() {
+    URL_SLTOOLS="https://github.com/ZarTek-Creole/slTools"
     URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
     BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git"
     FILE_CONF=/etc/slftp/sltools.cfg
@@ -104,7 +105,7 @@ Init_Binary() {
         fi
     done
     if [ -n "${BINS_MISSING}" ]; then
-        Sent_Error "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on https://github.com/ZarTek-Creole/slTools")" "${BINS_MISSING}"
+        Sent_Error "$(m_tr "[!] Some binaries are missing:%s.Check dependencies on %s")" "${URL_SLTOOLS}" "${BINS_MISSING}"
 
     fi
     if [[ "$(command -v fpc)" == "" ]]; then
