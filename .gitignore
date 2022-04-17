@@ -5,3 +5,5 @@
 /generate_lang.sh
 .devcontainer/Dockerfile
 .devcontainer/devcontainer.json
+/opt/src
+opt/src
