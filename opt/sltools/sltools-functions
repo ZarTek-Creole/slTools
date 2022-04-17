@@ -172,9 +172,9 @@ Config_Set_Value() {
     [ ! -f ${FILE_CONF_DEF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF_DEF}") && touch "${FILE_CONF_DEF}" && chmod 0666 "${FILE_CONF_DEF}"
     [ ! -f ${FILE_CONF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF}") && touch "${FILE_CONF}" && chmod 0666 "${FILE_CONF}"
     if [[ -f "${FILE_CONF}" && "$( grep -c -w "$1" ${FILE_CONF})" = 1 ]]; then
-	    value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
+	    local value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
     else
-        value_default=$(cat ${FILE_CONF_DEF} | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
+        local value_default=$(cat ${FILE_CONF_DEF} | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
         Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ] : " "$1" "${value_default}")"; read -r value
     	[ "$value" = "" ] && value=${value_default}
     fi

@@ -21,7 +21,7 @@ Run_SLFTP_Internal() {
         Sent_Error  "004" "$(m_tr "slFTP: Already running.")"
     else
         [ "$(whoami)" != "${unix_user} " ] && su -l ${unix_user} -c "screen -dmS ${slftp_screen_name} /usr/bin/sltools-core run" || screen -dmS  ${slftp_screen_name} /usr/bin/sltools-core run
-        retVal=$?
+        local retVal=$?
         [ ${retVal} -ne 0 ] && Sent_Error  "005"  "$(m_tr "Error starting slftp screen.")"
         ps aux | grep ${unix_user} | grep ${slftp_screen_name}
     fi
@@ -30,7 +30,7 @@ Run_SLFTP_Internal() {
 Run_SLFTP() {
     [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]] && Sent_Error "006" "$(m_tr "%s is missing." "${slftp_directory}"/"${slftp_binary_name}")"
     cd "${slftp_directory}" || exit
-    re='^[0-9]+$'
+    local re='^[0-9]+$'
     ! [[ ${start_reset_files} =~ ${re} ]] && Sent_Error "007" "$(m_tr "Invalid value for option '%s' , check configuration file." "start_reset_files")"
     [ "${reset_list}" != "" ] && rm -f "${reset_list}"
     ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && Sent_Error  "008" "$(m_tr "Invalid value for option '%s' , check configuration file." "slftp_restart_onfailure")"
