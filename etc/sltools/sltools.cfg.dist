@@ -11,12 +11,15 @@
 
 # Nom du fichier slftp (laisser par défaut)
 slftp_binary_name=slftp
-# 
+ 
 # Nom du screen sous lequel slftp sera lancé
 slftp_screen_name=slFTPScr
 
 # Répertoire slftp contenant les fichiers de données.
 slftp_directory=/opt/slftp
+
+# La version de slftp à installer. Par exemple : 1.5.8, 1.5.9, dev
+slftp_version=dev
 
 # Installation integrée comme commande système? (valeur booléenne)
 slftp_wide_system=1
@@ -39,6 +42,3 @@ start_reset_files=1
 
 # Listes des fichiers à purger au (re)démarrage de slFTP Si start_reset_files est activé.
 reset_list="slftp.kb slftp.speedstats slftp.history slftp.renames precatcher.log slftp.log databases/*.db"
-
-
-

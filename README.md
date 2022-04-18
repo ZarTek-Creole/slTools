@@ -120,6 +120,10 @@ Si vous rapportez des bugs, donnez des idées d'amélioration vous aidez déjà 
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
 [Et c'est par ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
 
+# Wiki
+[Vous pouvez trouver certaines reponses sur notre wiki](https://github.com/ZarTek-Creole/slTools/wiki)
+
+
 
 ---
 ```

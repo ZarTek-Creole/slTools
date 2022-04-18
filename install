@@ -38,12 +38,6 @@ ln -s /opt/sltools/sltools /usr/bin/
 [ -L /usr/bin/sltools-core ] && unlink /usr/bin/sltools-core
 ln -s /opt/sltools/sltools-core /usr/bin/
 
-echo "SL-Tools copy internal dependecies"
-# install depend internal
-install -m 755 -d /opt/src
-cp -r opt/src/fpc /opt/src/
-cp -r opt/src/slftp /opt/src/
-
 echo "SL-Tools initialisation log file"
 if [ ! -f "/var/log/sltools.log" ]; then
     touch /var/log/sltools.log

@@ -12,7 +12,12 @@ __root="$(cd "$(dirname "${__dir}")" && pwd)"
 
 m_tr() {
     local MSG=$(printf "$@")
-    echo $(gettext sltools "${MSG}") 
+    if [ "$(command -v gettext)" != "" ]; then
+        echo "$(gettext sltools "${MSG}")"
+    else
+        echo "${MSG}"
+    fi
+        
 }
 
 banner() {
@@ -85,7 +90,10 @@ Init() {
     URL_SLTOOLS="https://github.com/ZarTek-Creole/slTools"
     URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
     URL_SITE_FPC="https://www.freepascal.org"
-    BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make"
+    FPC_VERSION="3.2.2"
+    FPC_ARCH="x86_64-linux"
+    FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
+    BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget"
     FILE_CONF=/etc/sltools/sltools.cfg
     FILE_CONF_DEF=/etc/sltools/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
@@ -155,6 +163,7 @@ Init_Config() {
     Config_Check_Value "DEBUG"
     Config_Check_Value "LOG"
     Config_Check_Value "slftp_binary_name"
+    Config_Check_Value "slftp_version"
     Config_Check_Value "slftp_screen_name"
     Config_Check_Value "slftp_restart_onfailure"
     Config_Check_Value "slftp_directory"
@@ -208,6 +217,7 @@ Init_Account_Unix() {
     fi
 }
 Unix_User_Create() {
+    if Unix_Group_Exists sudo; then sudo addgroup sudo; fi
     sudo useradd "${unix_user}" -g "${unix_group}" -G sudo --create-home
 }
 Unix_User_Exists() {
