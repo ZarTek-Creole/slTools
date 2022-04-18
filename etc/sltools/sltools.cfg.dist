@@ -38,7 +38,7 @@ slftp_restart_onfailure=1
 restart_wait=5
 
 # Au (re)démarrage faut-il purger les fichiers ?
-start_reset_files=1
+start_reset_files="1"
 
 # Listes des fichiers à purger au (re)démarrage de slFTP Si start_reset_files est activé.
 reset_list="slftp.kb slftp.speedstats slftp.history slftp.renames precatcher.log slftp.log databases/*.db"

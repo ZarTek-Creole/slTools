@@ -44,7 +44,7 @@ Install_SLFTP() {
     [[ ! -f "/opt/src/slftp/Makefile" ]] && Sent_Error "010" "$(m_tr "Code source need update for %s." "SLFTP")"
     sudo sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
     [ ! -d "${slftp_directory}" ] && sudo mkdir -p "${slftp_directory}" && sudo chown $(whoami) -R "${slftp_directory}"
-    sudo make -s || exit
+    sudo make all_64 || exit
     sudo make install || exit
     [ "${slftp_wide_system}" = 1 ] && ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
 
@@ -70,16 +70,16 @@ Missing_SLFTP() {
 
 Install_FPC() {
     cd /tmp || exit
-    wget "${FPC_URL_DOWNLOAD}" -O fpc.tar
+    y
     tar xf "fpc.tar"
     cd "fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
-    echo -e '/usr\nN\nN\nN\n' | sh sudo ./install.sh
+    echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
     find "/usr/lib/fpc/${FPC_VERSION}/units/${FPC_ARCH}/" -type d -mindepth 1 -maxdepth 1 \
         -not -name 'fcl-base' \
         -not -name 'rtl' \
         -not -name 'rtl-console' \
         -not -name 'rtl-objpas' \
-        -exec rm -r {} \; 
+        -exec rm -fr {} \; 
     rm -r "/tmp/fpc*"
 
 }
@@ -222,6 +222,7 @@ console_main() {
 
 
 # run sltools
+#banner
 Init
 Init_Files
 Init_Config

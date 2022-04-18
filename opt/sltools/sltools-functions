@@ -35,7 +35,7 @@ banner() {
     echo "
                   Hi $(whoami), Welcome to the sl-Tools v$VER
     "
-    [[ ! -z "$1" ]] && SubBanner $*
+    [[ ! -z "${1:-}" ]] && SubBanner $*
 }
 
 SubBanner() {
@@ -93,7 +93,7 @@ Init() {
     FPC_VERSION="3.2.2"
     FPC_ARCH="x86_64-linux"
     FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
-    BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget"
+    BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget ld"
     FILE_CONF=/etc/sltools/sltools.cfg
     FILE_CONF_DEF=/etc/sltools/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
@@ -160,6 +160,8 @@ is_run_sudo () {
 
 Init_Config() {
     Sent_Debug "[RUN] config"
+    [ ! -f ${FILE_CONF_DEF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF_DEF}") && touch "${FILE_CONF_DEF}" && chmod 0666 "${FILE_CONF_DEF}"
+    [ ! -f ${FILE_CONF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF}") && touch "${FILE_CONF}" && chmod 0666 "${FILE_CONF}"
     Config_Check_Value "DEBUG"
     Config_Check_Value "LOG"
     Config_Check_Value "slftp_binary_name"
@@ -176,14 +178,10 @@ Init_Config() {
 
 Config_Set_Value() {
     Sent_Debug "[RUN] Config_Set_Value $*"
-    
-    
-    [ ! -f ${FILE_CONF_DEF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF_DEF}") && touch "${FILE_CONF_DEF}" && chmod 0666 "${FILE_CONF_DEF}"
-    [ ! -f ${FILE_CONF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF}") && touch "${FILE_CONF}" && chmod 0666 "${FILE_CONF}"
-    if [[ -f "${FILE_CONF}" && "$( grep -c -w "$1" ${FILE_CONF})" = 1 ]]; then
+       if [[ -f "${FILE_CONF}" && "$(grep -c -w "$1=" ${FILE_CONF})" = 1 ]]; then
 	    local value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
     else
-        local value_default=$(cat ${FILE_CONF_DEF} | grep -w "$1" | cut -d "=" -f2 | tr -d "\"")
+        local value_default=$(grep -w "$1=" ${FILE_CONF_DEF} | head -1 | cut -d "=" -f2 | tr -d "\"")
         Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ] : " "$1" "${value_default}")"; read -r value
     	[ "$value" = "" ] && value=${value_default}
     fi
