@@ -257,3 +257,7 @@ dl_wget() {
     Sent_MSG "$(m_tr "Download file from url %s to %s" "$1" "$2")"
     wget -q "$1" -O "$2"
 }
+cp_file_not_exist() {
+    Sent_MSG "$(m_tr "Copy file %s to %s" "$1" "$2")"
+    [[ ! -f "$2" ]] && cp "$1" "$2"
+}

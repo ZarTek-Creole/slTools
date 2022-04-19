@@ -39,13 +39,21 @@ Run_SLFTP() {
 }
 
 Install_SLFTP() {
-    [ ! -d "/opt/src/slftp" ] && sudo sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
+    [ ! -d "/opt/src/slftp" ] && sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
     cd /opt/src/slftp || exit
     [[ ! -f "/opt/src/slftp/Makefile" ]] && Sent_Error "010" "$(m_tr "Code source need update for %s." "SLFTP")"
     sudo sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
     [ ! -d "${slftp_directory}" ] && sudo mkdir -p "${slftp_directory}" && sudo chown $(whoami) -R "${slftp_directory}"
     sudo make all_64 || exit
     sudo make install || exit
+    cp_file_not_exist /opt/src/slftp/config/slftp.imdbcountries /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.ini /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.knowngroups /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.languagebase /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.precatcher /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.skip /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.skipgroups /opt/slftp/
+    cp_file_not_exist /opt/src/slftp/config/slftp.spamconf /opt/slftp/
     [ "${slftp_wide_system}" = 1 ] && sudo ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
 
 }
@@ -69,7 +77,6 @@ Missing_SLFTP() {
 }
 
 Install_FPC() {
-    cd /tmp || exit
     dl_wget "${FPC_URL_DOWNLOAD}" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     extract_file "fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
     cd "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
@@ -86,7 +93,7 @@ Missing_FPC() {
         "$(m_tr "Quit")";
     do
         case ${opt} in
-            "$(m_tr "Install automatically")") Install_FPC; sleep 2; Main_Menu; break;;
+            "$(m_tr "Install automatically")") Install_FPC; break;;
             "$(m_tr "Install manually")") Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_FPC}")"; exit 0;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") ${REPLY}";;
