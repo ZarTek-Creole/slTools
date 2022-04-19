@@ -2,7 +2,9 @@
 DEBUG=0
 LOG=1
 VER=0.4
-set -u 
+set -o errexit
+set -o pipefail
+set -o nounset
 
 # Set magic variables for current file & dir
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -246,4 +248,12 @@ Unix_Group_Create() {
 }
 Unix_Group_Exists() {
     return "$(grep -c "$1" /etc/group)"
+}
+extract_file() {
+    Sent_MSG "$(m_tr "Extract file %s to %s" "$1" "$2")"
+    tar xf "$1" --directory "$2"
+}
+dl_wget() {
+    Sent_MSG "$(m_tr "Download file from url %s to %s" "$1" "$2")"
+    wget -q "$1" -O "$2"
 }

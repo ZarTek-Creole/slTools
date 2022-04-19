@@ -46,7 +46,7 @@ Install_SLFTP() {
     [ ! -d "${slftp_directory}" ] && sudo mkdir -p "${slftp_directory}" && sudo chown $(whoami) -R "${slftp_directory}"
     sudo make all_64 || exit
     sudo make install || exit
-    [ "${slftp_wide_system}" = 1 ] && ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
+    [ "${slftp_wide_system}" = 1 ] && sudo ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
 
 }
 
@@ -70,14 +70,11 @@ Missing_SLFTP() {
 
 Install_FPC() {
     cd /tmp || exit
-    Sent_MSG "$(m_tr "Download file %s" "${FPC_URL_DOWNLOAD}")"
-    wget -q "${FPC_URL_DOWNLOAD}" -O "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
-    Sent_MSG "$(m_tr "Extract file %s" "fpc-${FPC_VERSION}.${FPC_ARCH}.tar")"
-    tar xf "fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
-    cd "fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
+    dl_wget "${FPC_URL_DOWNLOAD}" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
+    extract_file "fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
+    cd "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
     echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
     rm -rf "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"
-
 }
 
 Missing_FPC() {
