@@ -70,7 +70,7 @@ Missing_SLFTP() {
 
 Install_FPC() {
     cd /tmp || exit
-    y
+    wget -q "${FPC_URL_DOWNLOAD}" -O /tmp/fpc.tar
     tar xf "fpc.tar"
     cd "fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
     echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
@@ -79,8 +79,8 @@ Install_FPC() {
         -not -name 'rtl' \
         -not -name 'rtl-console' \
         -not -name 'rtl-objpas' \
-        -exec rm -fr {} \; 
-    rm -r "/tmp/fpc*"
+        -exec sudo rm -fr {} \; 
+    rm -rf /tmp/fpc.tar "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"
 
 }
 
@@ -224,6 +224,7 @@ console_main() {
 # run sltools
 #banner
 Init
+Init_Packages
 Init_Files
 Init_Config
 Init_Binary

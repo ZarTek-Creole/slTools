@@ -94,6 +94,7 @@ Init() {
     FPC_ARCH="x86_64-linux"
     FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget ld"
+    PACKAGES_NEEDED="make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext"
     FILE_CONF=/etc/sltools/sltools.cfg
     FILE_CONF_DEF=/etc/sltools/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
@@ -112,6 +113,24 @@ Init_Files() {
     source "${FILE_CONF}"
     # Efface les anciens logs ...
     [ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chmod 0666 "$FILE_LOG"
+}
+
+Init_Packages() {
+    local PACKAGES_MISSING=""
+    Sent_Debug "[RUN] Init_Binary"
+    # check for needed bins
+    for PKG in ${PACKAGES_NEEDED}; do
+        if dpkg-query -W -f'${Status}' "${PKG}" 2>/dev/null | grep -q "ok installed"; then
+            Sent_Debug "[+] FOUND: ${PKG}"
+        else
+            Sent_Debug "[-] NOT FOUND: ${PKG}"
+            PACKAGES_MISSING="${PACKAGES_MISSING} ${PKG}"
+        fi
+    done
+    if [ -n "${PACKAGES_MISSING}" ]; then
+        Sent_Error "011" "$(m_tr "Some mandatory packages are missing:%s." "${PACKAGES_MISSING}")" 
+
+    fi
 }
 
 Init_Binary() {

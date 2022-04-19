@@ -10,32 +10,32 @@
 ##
 
 # Nom du fichier slftp (laisser par défaut)
-slftp_binary_name=slftp
+slftp_binary_name="slftp"
  
 # Nom du screen sous lequel slftp sera lancé
-slftp_screen_name=slFTPScr
+slftp_screen_name="slFTPScr"
 
 # Répertoire slftp contenant les fichiers de données.
-slftp_directory=/opt/slftp
+slftp_directory="/opt/slftp"
 
 # La version de slftp à installer. Par exemple : 1.5.8, 1.5.9, dev
-slftp_version=dev
+slftp_version="dev"
 
 # Installation integrée comme commande système? (valeur booléenne)
-slftp_wide_system=1
+slftp_wide_system="1"
 
 # Nom de l'utilisateur -avec les droits sudo- sous lequel les instances doivent être lancées.
-unix_user=sltools
+unix_user="sltools"
 
 # Nom du groupe utilisateur -avec droits sudo- sous lequel les instances doivent être lancées.
-unix_group=sltools
+unix_group="sltools"
 
 # Redémarrer slftp en cas de fermeture de l'application? (valeur booléenne)
-slftp_restart_onfailure=1
+slftp_restart_onfailure="1"
 
 # Délai d'attente avant de redémarrer lors de la fermeture de slftp.
 # Temps en secondes, 0 valant aucune attente
-restart_wait=5
+restart_wait="5"
 
 # Au (re)démarrage faut-il purger les fichiers ?
 start_reset_files="1"
