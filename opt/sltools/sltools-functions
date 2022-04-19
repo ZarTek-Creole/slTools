@@ -192,9 +192,10 @@ Init_Config() {
     Config_Check_Value "unix_user"
     Config_Check_Value "unix_group"
     Config_Check_Value "slftp_wide_system"
+    Config_Check_Value "restart_wait"
+    Config_Check_Value "reset_list"
     Sent_Debug "[OK] config"
 }
-
 Config_Set_Value() {
     Sent_Debug "[RUN] Config_Set_Value $*"
        if [[ -f "${FILE_CONF}" && "$(grep -c -w "$1=" ${FILE_CONF})" = 1 ]]; then

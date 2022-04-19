@@ -9,6 +9,12 @@
 #
 ##
 
+# Activer le mode DEBUG
+DEBUG="0"
+
+# Activer le mode LOG
+LOG="0"
+
 # Nom du fichier slftp (laisser par défaut)
 slftp_binary_name="slftp"
  

@@ -76,12 +76,6 @@ Install_FPC() {
     tar xf "fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     cd "fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
     echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
-    find "/usr/lib/fpc/${FPC_VERSION}/units/${FPC_ARCH}/" -type d -mindepth 1 -maxdepth 1 \
-        -not -name 'fcl-base' \
-        -not -name 'rtl' \
-        -not -name 'rtl-console' \
-        -not -name 'rtl-objpas' \
-        -exec sudo rm -fr {} \; 
     rm -rf "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"
 
 }
