@@ -70,8 +70,10 @@ Missing_SLFTP() {
 
 Install_FPC() {
     cd /tmp || exit
-    wget -q "${FPC_URL_DOWNLOAD}" -O /tmp/fpc.tar
-    tar xf "fpc.tar"
+    Sent_MSG "$(m_tr "Download file %s" "${FPC_URL_DOWNLOAD}")"
+    wget -q "${FPC_URL_DOWNLOAD}" -O "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
+    Sent_MSG "$(m_tr "Extract file %s" "fpc-${FPC_VERSION}.${FPC_ARCH}.tar")"
+    tar xf "fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     cd "fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
     echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
     find "/usr/lib/fpc/${FPC_VERSION}/units/${FPC_ARCH}/" -type d -mindepth 1 -maxdepth 1 \
@@ -80,7 +82,7 @@ Install_FPC() {
         -not -name 'rtl-console' \
         -not -name 'rtl-objpas' \
         -exec sudo rm -fr {} \; 
-    rm -rf /tmp/fpc.tar "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"
+    rm -rf "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"
 
 }
 

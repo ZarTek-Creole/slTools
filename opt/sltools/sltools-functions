@@ -94,7 +94,7 @@ Init() {
     FPC_ARCH="x86_64-linux"
     FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget ld"
-    PACKAGES_NEEDED="make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext"
+    PACKAGES_NEEDED="make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext screen"
     FILE_CONF=/etc/sltools/sltools.cfg
     FILE_CONF_DEF=/etc/sltools/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
