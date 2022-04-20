@@ -261,3 +261,19 @@ cp_file_not_exist() {
     Sent_MSG "$(m_tr "Copy file %s to %s" "$1" "$2")"
     [[ ! -f "$2" ]] && cp "$1" "$2"
 }
+Run_AS_User() {
+    if [ "$(whoami)" != "${unix_user}" ]; then
+        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "sudo -H -u \"${unix_user}\" bash -c '$@'" "${unix_user}")"
+        sudo -H -u "${unix_user}" bash -c '$@'
+    else
+        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "$@" "$(whoami)")"
+        $@
+    fi
+}
+slftp_is_run() {
+    if [[ "$(Run_AS_User screen -ls)" = *${slftp_screen_name}* ]]; then
+        return 1
+    else
+       return 0
+    fi
+}

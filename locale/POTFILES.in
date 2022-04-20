@@ -2,4 +2,4 @@
 ./opt/sltools/sltools-core
 ./opt/sltools/sltools-functions
 ./opt/sltools/sltools_join.sh
-./opt/sltools/sltools_run_slftp.sh
+./opt/sltools/sltools_SL_START.sh

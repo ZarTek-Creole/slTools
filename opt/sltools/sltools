@@ -16,30 +16,42 @@ Sent_Command() {
     screen -S "${slftp_screen_name}" -p 0 -X stuff "stop^M"
 }
 
-Run_SLFTP_Internal() {
-    if [[ "$(screen -ls)" = *${slftp_screen_name}* ]]; then
-        Sent_Error  "004" "$(m_tr "slFTP: Already running.")"
+SL_STOP() {
+    if slftp_is_run; then 
+        /usr/bin/sltools-core stop
     else
-        [ "$(whoami)" != "${unix_user} " ] && su -l ${unix_user} -c "screen -dmS ${slftp_screen_name} /usr/bin/sltools-core run" || screen -dmS  ${slftp_screen_name} /usr/bin/sltools-core run
-        local retVal=$?
-        [ ${retVal} -ne 0 ] && Sent_Error  "005"  "$(m_tr "Error starting slftp screen.")"
-        ps aux | grep ${unix_user} | grep ${slftp_screen_name}
+       Sent_Error "014" "$(m_tr "slFTP: not running.")"
     fi
 }
-
-Run_SLFTP() {
+SL_JOIN() {
+    if slftp_is_run; then 
+        /usr/bin/sltools-core join
+    else
+       Sent_Error "014" "$(m_tr "slFTP: not running.")"
+    fi
+}
+SL_STATUS() {
+    /usr/bin/sltools-core status
+}
+SL_START() {
+    if slftp_is_run; then 
+        Sent_Error "012" "$(m_tr "slFTP: Already running.")"
+    fi
     [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]] && Sent_Error "006" "$(m_tr "%s is missing." "${slftp_directory}"/"${slftp_binary_name}")"
     cd "${slftp_directory}" || exit
     local re='^[0-9]+$'
     ! [[ ${start_reset_files} =~ ${re} ]] && Sent_Error "007" "$(m_tr "Invalid value for option '%s' , check configuration file." "start_reset_files")"
-    [ "${reset_list}" != "" ] && rm -f "${reset_list}"
-    ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && Sent_Error  "008" "$(m_tr "Invalid value for option '%s' , check configuration file." "slftp_restart_onfailure")"
-    Run_SLFTP_Internal
-    exit 1
+    [ "${reset_list}" != "" ] && rm -rf "${reset_list}"
+    ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && Sent_Error "008" "$(m_tr "Invalid value for option '%s' , check configuration file." "slftp_restart_onfailure")"
+    
+    Run_AS_User "screen -dmS ${slftp_screen_name} /usr/bin/sltools-core start"
+    ps aux | grep ${unix_user} | grep ${slftp_screen_name}
+    exit
 }
 
-Install_SLFTP() {
-    [ ! -d "/opt/src/slftp" ] && sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
+SL_INSTALL() {
+    [ -d "/opt/src/slftp" ] && Sent_Error "013" "$(m_tr "slFTP: Already installed.")"
+    sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
     cd /opt/src/slftp || exit
     [[ ! -f "/opt/src/slftp/Makefile" ]] && Sent_Error "010" "$(m_tr "Code source need update for %s." "SLFTP")"
     sudo sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
@@ -55,7 +67,6 @@ Install_SLFTP() {
     cp_file_not_exist /opt/src/slftp/config/slftp.skipgroups /opt/slftp/
     cp_file_not_exist /opt/src/slftp/config/slftp.spamconf /opt/slftp/
     [ "${slftp_wide_system}" = 1 ] && sudo ln -s "${slftp_directory}"/"${slftp_binary_name}" /usr/bin/
-
 }
 
 Missing_SLFTP() {
@@ -67,7 +78,7 @@ Missing_SLFTP() {
         "$(m_tr "Quit")";
         do
             case ${opt} in
-                "$(m_tr "Install automatically")") Install_SLFTP; sleep 2;;
+                "$(m_tr "Install automatically")") SL_INSTALL; sleep 2;;
                 "$(m_tr "Install manually")") Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_SLFTP}")"; exit 0;;
                 "$(m_tr "Quit")") break;;
                 *) echo "$(m_tr "Invalid option") ${REPLY}";;
@@ -109,19 +120,21 @@ Menu_SLFTP () {
     Sent_Debug "[RUN] Menu_SLFTP"
     PS3="$(m_tr "Select the operation"): "
     select opt in                       \
-        "$(m_tr "Run")"                 \
+        "$(m_tr "Start")"               \
         "$(m_tr "Stop")"                \
+        "$(m_tr "Restart")"             \
         "$(m_tr "Join")"                \
-        "$(m_tr "Install")"             \
+        "$(m_tr "Status")"              \
         "$(m_tr "Update")"              \
         "$(m_tr "Back to main menu")"   \
         "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Run")") Run_SLFTP; sleep 2; Main_Menu; break;;
-            "$(m_tr "Stop")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Join")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Install")") Install_SLFTP; sleep 2; Main_Menu; break;;
-            "$(m_tr "Update")")  sleep 2; Main_Menu; break;;
+            "$(m_tr "Start")") SL_START; sleep 2; Menu_SLFTP; break;;
+            "$(m_tr "Stop")") SL_STOP; sleep 2; Menu_SLFTP; break;;
+            "$(m_tr "Restart")") SL_STOP; SL_START; sleep 2; Menu_SLFTP; break;;
+            "$(m_tr "Join")") SL_JOIN; sleep 2; Menu_SLFTP; break;;
+            "$(m_tr "Status")") SL_STATUS; sleep 2; Menu_SLFTP; break;;
+            "$(m_tr "Update")")  sleep 2; Menu_SLFTP; break;;
             "$(m_tr "Back to main menu")") Main_Menu; break;;
             "$(m_tr "Quit")") break;;
             *) echo "$(m_tr "Invalid option") ${REPLY}";;
@@ -189,37 +202,9 @@ Main_Menu () {
 }
 
 # Terminal command
-console_usage() { 
-  Sent_MSG "Usage: $0 " 1>&2 
-}
-
-console_run_usage() {
-    Sent_MSG "test -> $@"
-    
-}
-
-console_run() {
-    shift
-    [[ $1 == "" ]] && console_run_usage $@ && return
-    Init_Config
-    [[ $1 == "slftp" ]] && Run_SLFTP && return
-    [[ $1 == "slftp_internal" ]] && Run_SLFTP_Internal && return
-}
-
 console_main() {
-    [[ ${1:-} == "" ]] && return;
-    [ "$1" = "--help" -o "$1" = "-h" ] && console_usage
-    [[ $1 == "run" ]] && console_run $@;
-    while getopts ":r:v" options; do 
-        case "${options}" in
-            v) Sent_MSG "$(m_tr "Sl-Tools, current version V%s. Website: %s" "${VER}" "${URL_SLTOOLS}")"; exit ;;
-            "r") Sent_MSG "n = ${OPTARG}"; exit ;;
-            *) console_usage;;
-        esac
-    done
-    exit 0    
+   [[ ! -v "${1:-}" ]] && /usr/bin/sltools-core "$@" && exit 
 }
-
 
 # run sltools
 #banner
@@ -229,5 +214,4 @@ Init_Files
 Init_Config
 Init_Binary
 Init_Account_Unix
-console_main "$@"
-Main_Menu
+[[ "${1:-}" == "" ]] && Main_Menu || console_main "$@"
