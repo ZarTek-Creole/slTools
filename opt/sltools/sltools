@@ -89,7 +89,7 @@ Missing_SLFTP() {
 
 Install_FPC() {
     dl_wget "${FPC_URL_DOWNLOAD}" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
-    extract_file "fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
+    extract_file "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
     cd "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
     echo -e '/usr\nN\nN\nN\n' | sudo ./install.sh
     rm -rf "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}"

@@ -96,10 +96,12 @@ Init() {
     FPC_ARCH="x86_64-linux"
     FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget ld"
-    PACKAGES_NEEDED="make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext screen"
+    DEB_PKG_NEED="sudo make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext screen"
+    ALPINE_PKG_NEED="sudo make binutils zlib-dev ncurses-dev sqlite-dev libressl-dev gettext screen"
     FILE_CONF=/etc/sltools/sltools.cfg
     FILE_CONF_DEF=/etc/sltools/sltools.cfg.dist
     FILE_LOG=/var/log/sltools.log
+    OS_Detect
     Sent_Debug "[OK] Init"
 }
 is_super_rigths() {
@@ -121,28 +123,36 @@ Init_Packages() {
     local PACKAGES_MISSING=""
     Sent_Debug "[RUN] Init_Binary"
     # check for needed bins
-    for PKG in ${PACKAGES_NEEDED}; do
-        if dpkg-query -W -f'${Status}' "${PKG}" 2>/dev/null | grep -q "ok installed"; then
+    if [[ "$_OSFOUND" == "ALPINE" ]]; then
+        local PKG_LIST="${ALPINE_PKG_NEED}"
+    elif [[ "$_OSFOUND" == "DEBIAN" ]]; then
+        local PKG_LIST="${DEB_PKG_NEED}"
+    else 
+        local PKG_LIST="${DEB_PKG_NEED}"
+    fi
+    for PKG in ${PKG_LIST}; do
+        if isPackage_Installed ${PKG}; then
             Sent_Debug "[+] FOUND: ${PKG}"
         else
             Sent_Debug "[-] NOT FOUND: ${PKG}"
-            PACKAGES_MISSING="${PACKAGES_MISSING} ${PKG}"
+            local PACKAGES_MISSING="${PACKAGES_MISSING} ${PKG}"
         fi
     done
     if [ -n "${PACKAGES_MISSING}" ]; then
-        Sent_Error "011" "$(m_tr "Some mandatory packages are missing:%s." "${PACKAGES_MISSING}")" 
+        Sent_Error "011" "$(m_tr "Some mandatory packages are missing: %s" "sudo ${_PKGCMD}${PACKAGES_MISSING}")" 
 
     fi
 }
-
 Init_Binary() {
     local BINS_MISSING=""
     Sent_Debug "[RUN] Init_Binary"
     # check for needed bins
-    for BIN in ${BINS_NEEDED}; do
-        if [ "$(command -v "${BIN}")" != "" ]; then
+    for BIN in ${BINS_NEEDED[*]}; do
+        if isCommand_Exist ${BIN}; then
+        echo "[+] FOUND: ${BIN}"
             Sent_Debug "[+] FOUND: ${BIN}"
         else
+        echo "[+] NOT FOUND: ${BIN}"
             Sent_Debug "[-] NOT FOUND: ${BIN}"
             BINS_MISSING="${BINS_MISSING} ${BIN}"
         fi
@@ -275,5 +285,32 @@ slftp_is_run() {
         return 1
     else
        return 0
+    fi
+}
+OS_Detect() {
+    if isCommand_Exist yum; then
+        _OSFOUND="RHEL"
+        _PKGCMD="yum"
+    elif isCommand_Exist apt; then
+        _OSFOUND="DEBIAN"
+        _PKGCMD="apt install"
+    elif isCommand_Exist apk; then
+        _OSFOUND="ALPINE"
+        _PKGCMD="apk add"
+    else
+        _OSFOUND="UNKNOWN"
+        _PKGCMD=""
+    fi
+}
+isCommand_Exist() {
+    type $1 >/dev/null 2>&1 && return 0 || return 1
+}
+isPackage_Installed() {
+    if [[ "$_OSFOUND" == "ALPINE" ]]; then
+        if apk -e info "$1" &> /dev/null; then return 0; else return 1; fi
+    elif [[ "$_OSFOUND" == "DEBIAN" ]]; then
+        if dpkg-query -W -f'${Status}' "${1}" 2>/dev/null | grep -q "ok installed"; then return 1; else return 0; fi
+    else 
+        return 1
     fi
 }
