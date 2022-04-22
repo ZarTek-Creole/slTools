@@ -23,7 +23,7 @@ m_tr() {
 }
 
 banner() {
-    [ "${DEBUG}" -ne 1 ] && clear
+    [ "${DEBUG:-0}" -ne 1 ] && clear
     echo "
            __         (█)    ( ▄▄▄▄(█)▄▄▄▄ )   ,---.         ( ) ▀     ▀ ( )
           |  \    ▄▄▄▄███▄▄▄▄ ▐░░░░░░░░░░░▌   ' S ,'\   \(/     \  ▀▀▀  /
@@ -35,7 +35,7 @@ banner() {
  ___   ▄█▀| ██         █      ▐░░░░░░░░░░░▌  \ S \  / By/ /ZarTeK ▌   ▌
  \▄▄▄▄▄_█▀ \██        /)\      ▀▀▀▀▀▀▀▀▀▀▀    \`----'  _/  \_       ▀   ▀"
     echo "
-                  Hi $(whoami), Welcome to the sl-Tools v$VER
+                  Hi $(whoami), Welcome to the sl-Tools v${VER:-current}
     "
     [[ ! -z "${1:-}" ]] && SubBanner $*
 }
@@ -116,7 +116,7 @@ Init_Files() {
     fi 
     source "${FILE_CONF}"
     # Efface les anciens logs ...
-    [ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chmod 0666 "$FILE_LOG"
+    #[ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chmod 0666 "$FILE_LOG"
 }
 
 Init_Packages() {
@@ -143,24 +143,7 @@ Init_Packages() {
 
     fi
 }
-Init_Binary() {
-    local BINS_MISSING=""
-    Sent_Debug "[RUN] Init_Binary"
-    # check for needed bins
-    for BIN in ${BINS_NEEDED[*]}; do
-        if isCommand_Exist ${BIN}; then
-        echo "[+] FOUND: ${BIN}"
-            Sent_Debug "[+] FOUND: ${BIN}"
-        else
-        echo "[+] NOT FOUND: ${BIN}"
-            Sent_Debug "[-] NOT FOUND: ${BIN}"
-            BINS_MISSING="${BINS_MISSING} ${BIN}"
-        fi
-    done
-    if [ -n "${BINS_MISSING}" ]; then
-        Sent_Error "002" "$(m_tr "Some mandatory utilities are missing:%s." "${BINS_MISSING}")" 
-
-    fi
+Init_thirds() {
     if [[ "$(command -v fpc)" == "" ]]; then
         banner "FPC (Free Pascal Compiler)"
         Sent_MSG "$(m_tr "FPC (Free Pascal Compiler) is missing to compiler slftp.")"
@@ -172,6 +155,23 @@ Init_Binary() {
         Sent_MSG "$(m_tr "%s is missing." "${slftp_binary_name}")" 
         printf '\n'
         Missing_SLFTP
+    fi
+}
+Init_Binary() {
+    local BINS_MISSING=""
+    Sent_Debug "[RUN] Init_Binary"
+    # check for needed bins
+    for BIN in ${BINS_NEEDED[*]}; do
+        if isCommand_Exist ${BIN}; then
+            Sent_Debug "[+] FOUND: ${BIN}"
+        else
+            Sent_Debug "[-] NOT FOUND: ${BIN}"
+            BINS_MISSING="${BINS_MISSING} ${BIN}"
+        fi
+    done
+    if [ -n "${BINS_MISSING}" ]; then
+        Sent_Error "002" "$(m_tr "Some mandatory utilities are missing:%s." "${BINS_MISSING}")" 
+
     fi
     Sent_Debug "[OK] Init_Binary"
 }
@@ -273,10 +273,10 @@ cp_file_not_exist() {
 }
 Run_AS_User() {
     if [ "$(whoami)" != "${unix_user}" ]; then
-        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "sudo -H -u \"${unix_user}\" bash -c '$@'" "${unix_user}")"
+        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "sudo -H -u \"${unix_user}\" bash -c '$*'" "${unix_user}")"
         sudo -H -u "${unix_user}" bash -c '$@'
     else
-        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "$@" "$(whoami)")"
+        Sent_MSG "$(m_tr "Run '%s' as user '%s'" "$*" "$(whoami)")"
         $@
     fi
 }
@@ -309,8 +309,12 @@ isPackage_Installed() {
     if [[ "$_OSFOUND" == "ALPINE" ]]; then
         if apk -e info "$1" &> /dev/null; then return 0; else return 1; fi
     elif [[ "$_OSFOUND" == "DEBIAN" ]]; then
-        if dpkg-query -W -f'${Status}' "${1}" 2>/dev/null | grep -q "ok installed"; then return 1; else return 0; fi
+        if dpkg-query -W -f'${Status}' "${1}" 2>/dev/null | grep -q "ok installed"; then return 0; else return 1; fi
     else 
         return 1
     fi
+}
+Check_CurrentUser() {
+    [[ $EUID -ne 0 ]] && [ "$(whoami)" != "${unix_user}" ] && Sent_Error "015" "$(m_tr "The current user '%s' does not have the rights to execute sl-tools. Run with root or %s account." "$(whoami)" "${unix_user}")"
+    if sudo -nv 2>&1 | grep -q '^sudo:'; then Sent_Error "016" "$(m_tr "Current usage '%s' requires sudo password." "$(whoami)")"; fi
 }
