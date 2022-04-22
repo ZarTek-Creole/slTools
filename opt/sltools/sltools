@@ -49,6 +49,7 @@ SL_START() {
 }
 
 SL_INSTALL() {
+    cd ${__dir} || exit
     [ -d "/opt/src/slftp" ] && Sent_Error "013" "$(m_tr "slFTP: Already installed.")"
     sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
     cd /opt/src/slftp || exit
@@ -87,6 +88,7 @@ Missing_SLFTP() {
 }
 
 Install_FPC() {
+    cd ${__dir} || exit
     dl_wget "${FPC_URL_DOWNLOAD}" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     extract_file "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
     cd "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
@@ -207,14 +209,13 @@ console_main() {
 
 # run sltools
 Init
+echo "OS FOUND : $_OSFOUND"
 Init_Files
 Init_Config
-Check_CurrentUser
 Init_Binary
-
 Init_Packages
 Init_Account_Unix
-
+Check_CurrentUser
 Init_thirds
 
 [[ "${1:-}" == "" ]] && Main_Menu || console_main "$@"
