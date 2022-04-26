@@ -2,13 +2,13 @@
 # Copyright (C) 2022 ZarTeK Creole
 # This file is distributed under the same license as the sltools package.
 # Automatically generated, 2022.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sltools 0.0.1\n"
 "Report-Msgid-Bugs-To: ZarTeK.Creole@GMail.com\n"
 "POT-Creation-Date: 2022-04-26 00:05+0000\n"
-"PO-Revision-Date: 2022-04-14 23:24+0200\n"
+"PO-Revision-Date: 2022-04-26 02:19+0200\n"
 "Last-Translator: z\n"
 "Language-Team: none\n"
 "Language: nl\n"
@@ -19,8 +19,9 @@ msgstr ""
 "X-Generator: Poedit 3.0.1\n"
 
 #: opt/sltools/sltools:37 opt/sltools/sltools-functions:155
+#, fuzzy
 msgid "%s is missing."
-msgstr ""
+msgstr "%s ontbreekt."
 
 #: opt/sltools/sltools-functions:113
 #, fuzzy
@@ -28,8 +29,9 @@ msgid "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file
 msgstr "(Err_004) Het volgende SL-Tools bestand ontbreekt: '%s'. Het maken van het bestand ..."
 
 #: opt/sltools/sltools-functions:108 opt/sltools/sltools-functions:112
+#, fuzzy
 msgid "A command requires higher rights such as root or sudo to continue. Start again with higher rights.."
-msgstr ""
+msgstr "Een commando vereist hogere rechten zoals root of sudo om door te gaan. Begin opnieuw met hogere rechten.."
 
 #: opt/sltools/sltools:130 opt/sltools/sltools:139 opt/sltools/sltools:151
 #: opt/sltools/sltools:155 opt/sltools/sltools:170 opt/sltools/sltools:177
@@ -37,40 +39,48 @@ msgid "Back to main menu"
 msgstr "Terug naar hoofdmenu"
 
 #: opt/sltools/sltools:56
+#, fuzzy
 msgid "Code source need update for %s."
-msgstr ""
+msgstr "Codebron moet worden bijgewerkt voor %s."
 
 #: opt/sltools/sltools:166 opt/sltools/sltools:173
 msgid "Config"
 msgstr "Configureer"
 
 #: opt/sltools/sltools-functions:271
+#, fuzzy
 msgid "Copy file %s to %s"
-msgstr ""
+msgstr "Kopieer het bestand %s naar %s"
 
 #: opt/sltools/sltools-functions:194 opt/sltools/sltools-functions:195
+#, fuzzy
 msgid "Creating file %s"
-msgstr ""
+msgstr "%s maken"
 
 #: opt/sltools/sltools-functions:319
+#, fuzzy
 msgid "Current usage '%s' requires sudo password."
-msgstr ""
+msgstr "Huidig gebruik '%s' vereist sudo wachtwoord."
 
 #: opt/sltools/sltools-functions:267
+#, fuzzy
 msgid "Download file from url %s to %s"
-msgstr ""
+msgstr "Download het bestand van url %s naar %s"
 
 #: opt/sltools/sltools-functions:263
+#, fuzzy
 msgid "Extract file %s to %s"
-msgstr ""
+msgstr "Bestand uitpakken %s naar %s"
 
 #: opt/sltools/sltools-functions:149
+#, fuzzy
 msgid "FPC (Free Pascal Compiler) is missing to compiler slftp."
-msgstr ""
+msgstr "FPC (Free Pascal Compiler) ontbreekt om slftp te compileren."
 
 #: opt/sltools/sltools-functions:80
+#, fuzzy
 msgid "For more information visit: %s"
-msgstr ""
+msgstr "Voor meer informatie bezoek: %s"
 
 #: opt/sltools/sltools:168 opt/sltools/sltools:175
 msgid "Info"
@@ -99,8 +109,9 @@ msgid "Invalid option"
 msgstr "Ongeldige optie"
 
 #: opt/sltools/sltools:40 opt/sltools/sltools:42
+#, fuzzy
 msgid "Invalid value for option '%s' , check configuration file."
-msgstr ""
+msgstr "Ongeldige waarde voor optie '%s' , controleer het configuratiebestand."
 
 #: opt/sltools/sltools:127 opt/sltools/sltools:136
 msgid "Join"
@@ -136,11 +147,12 @@ msgstr "Beenden"
 
 #: opt/sltools/sltools:126 opt/sltools/sltools:135
 msgid "Restart"
-msgstr ""
+msgstr "Herstart"
 
 #: opt/sltools/sltools-functions:276 opt/sltools/sltools-functions:279
+#, fuzzy
 msgid "Run '%s' as user '%s'"
-msgstr ""
+msgstr "Voer '%s' uit als '%s' van de gebruiker"
 
 #: opt/sltools/sltools:74 opt/sltools/sltools:101 opt/sltools/sltools:122
 #: opt/sltools/sltools:148 opt/sltools/sltools:164 opt/sltools/sltools:188
@@ -149,36 +161,41 @@ msgid "Select the operation"
 msgstr "Selecteer de bewerking"
 
 #: opt/sltools/sltools-core:61
+#, fuzzy
 msgid "Sl-Tools, current version V%s. Website: %s"
-msgstr ""
+msgstr "Sl-Tools, huidige versie V%s. Website: %s"
 
 #: opt/sltools/sltools-functions:142
+#, fuzzy
 msgid "Some mandatory packages are missing: %s"
-msgstr ""
+msgstr "Enkele verplichte pakketten ontbreken: %s"
 
 #: opt/sltools/sltools-functions:173
+#, fuzzy
 msgid "Some mandatory utilities are missing:%s."
-msgstr ""
+msgstr "Sommige verplichte hulpprogramma's ontbreken:%s."
 
 #: opt/sltools/sltools:124 opt/sltools/sltools:133
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: opt/sltools/sltools:128 opt/sltools/sltools:137
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: opt/sltools/sltools:125 opt/sltools/sltools:134
 msgid "Stop"
 msgstr "Stop"
 
 #: opt/sltools/sltools-functions:227
+#, fuzzy
 msgid "The configuration of '%s=Value' is missing in %s"
-msgstr ""
+msgstr "De configuratie '%s=Waarde' ontbreekt in %s"
 
 #: opt/sltools/sltools-functions:318
+#, fuzzy
 msgid "The current user '%s' does not have the rights to execute sl-tools. Run with root or %s account."
-msgstr ""
+msgstr "De huidige gebruiker '%s' heeft niet de rechten om sl-tools uit te voeren. Uitvoeren met root- of %s-account."
 
 #: opt/sltools/sltools-functions:233
 #, fuzzy
@@ -205,33 +222,40 @@ msgid "Update"
 msgstr "Bijwerken"
 
 #: opt/sltools/sltools:53
+#, fuzzy
 msgid "slFTP: Already installed."
-msgstr ""
+msgstr "slFTP: Reeds geïnstalleerd."
 
 #: opt/sltools/sltools:44
+#, fuzzy
 msgid "slFTP: Already running."
-msgstr ""
+msgstr "slFTP: Loopt al."
 
 #: opt/sltools/sltools:23 opt/sltools/sltools:30
+#, fuzzy
 msgid "slFTP: not running."
-msgstr ""
+msgstr "slFTP: niet actief."
 
 #: opt/sltools/sltools-core:15
+#, fuzzy
 msgid "slftp did not terminate as expected.."
-msgstr ""
+msgstr "slftp eindigde niet zoals verwacht.."
 
 #: opt/sltools/sltools-core:17
+#, fuzzy
 msgid "slftp is correctly stopped."
-msgstr ""
+msgstr "slftp is correct gestopt."
 
 #: opt/sltools/sltools-core:8 opt/sltools/sltools-core:20
 #: opt/sltools/sltools-core:28
+#, fuzzy
 msgid "slftp is not running."
-msgstr ""
+msgstr "slftp is niet actief."
 
 #: opt/sltools/sltools-core:6
+#, fuzzy
 msgid "slftp is running."
-msgstr ""
+msgstr "slftp loopt."
 
 #: opt/sltools/sltools-functions:18
 #, fuzzy
