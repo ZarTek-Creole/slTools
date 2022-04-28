@@ -17,17 +17,17 @@ Sent_Command() {
 }
 
 SL_STOP() {
-    if slftp_is_run; then 
+    if slftp_is_run; then
         /usr/bin/sltools-core stop
     else
-       Sent_Error "014" "$(m_tr "slFTP: not running.")"
+        Sent_Error "014" "$(m_tr "slFTP: not running.")"
     fi
 }
 SL_JOIN() {
-    if slftp_is_run; then 
+    if slftp_is_run; then
         /usr/bin/sltools-core join
     else
-       Sent_Error "014" "$(m_tr "slFTP: not running.")"
+        Sent_Error "014" "$(m_tr "slFTP: not running.")"
     fi
 }
 SL_STATUS() {
@@ -40,7 +40,7 @@ SL_START() {
     ! [[ ${start_reset_files} =~ ${re} ]] && Sent_Error "007" "$(m_tr "Invalid value for option '%s' , check configuration file." "start_reset_files")"
     [ "${reset_list}" != "" ] && rm -rf "${reset_list}"
     ! [[ "${slftp_restart_onfailure}" =~ ${re} ]] && Sent_Error "008" "$(m_tr "Invalid value for option '%s' , check configuration file." "slftp_restart_onfailure")"
-    if slftp_is_run; then 
+    if slftp_is_run; then
         Sent_Error "012" "$(m_tr "slFTP: Already running.")"
     fi
     Run_AS_User "screen -dmS ${slftp_screen_name} /usr/bin/sltools-core start"
@@ -72,18 +72,23 @@ SL_INSTALL() {
 Missing_SLFTP() {
     Sent_Debug "[RUN] Missing_SLFTP"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                           \
-        "$(m_tr "Install automatically")"   \
-        "$(m_tr "Install manually")"        \
-        "$(m_tr "Quit")";
-        do
-            case ${opt} in
-                "$(m_tr "Install automatically")") SL_INSTALL; break;;
-                "$(m_tr "Install manually")") Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_SLFTP}")"; exit 0;;
-                "$(m_tr "Quit")") break;;
-                *) echo "$(m_tr "Invalid option") ${REPLY}";;
-            esac
-        done
+    select opt in \
+        "$(m_tr "Install automatically")" \
+        "$(m_tr "Install manually")" \
+        "$(m_tr "Quit")"; do
+        case ${opt} in
+        "$(m_tr "Install automatically")")
+            SL_INSTALL
+            break
+            ;;
+        "$(m_tr "Install manually")")
+            Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_SLFTP}")"
+            exit 0
+            ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
+        esac
+    done
     Sent_Debug "[OK] Missing_SLFTP"
 }
 
@@ -99,104 +104,171 @@ Install_FPC() {
 Missing_FPC() {
     Sent_Debug "[RUN] Missing_FPC"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                           \
-        "$(m_tr "Install automatically")"   \
-        "$(m_tr "Install manually")"        \
-        "$(m_tr "Quit")";
-    do
+    select opt in \
+        "$(m_tr "Install automatically")" \
+        "$(m_tr "Install manually")" \
+        "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Install automatically")") Install_FPC; break;;
-            "$(m_tr "Install manually")") Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_FPC}")"; exit 0;;
-            "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") ${REPLY}";;
+        "$(m_tr "Install automatically")")
+            Install_FPC
+            break
+            ;;
+        "$(m_tr "Install manually")")
+            Sent_MSG "$(m_tr "To install manually visit the URL address: %s" "${URL_SITE_FPC}")"
+            exit 0
+            ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
         esac
     done
     Sent_Debug "[OK] Missing_FPC"
 }
 
-
-
-Menu_SLFTP () {
+Menu_SLFTP() {
     banner "Menu SLFTP"
     Sent_Debug "[RUN] Menu_SLFTP"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                       \
-        "$(m_tr "Start")"               \
-        "$(m_tr "Stop")"                \
-        "$(m_tr "Restart")"             \
-        "$(m_tr "Join")"                \
-        "$(m_tr "Status")"              \
-        "$(m_tr "Update")"              \
-        "$(m_tr "Back to main menu")"   \
+    select opt in \
+        "$(m_tr "Start")" \
+        "$(m_tr "Stop")" \
+        "$(m_tr "Restart")" \
+        "$(m_tr "Join")" \
+        "$(m_tr "Status")" \
+        "$(m_tr "Update")" \
+        "$(m_tr "Back to main menu")" \
         "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Start")") SL_START; sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Stop")") SL_STOP; sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Restart")") SL_STOP; SL_START; sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Join")") SL_JOIN; sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Status")") SL_STATUS; sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Update")")  sleep 2; Menu_SLFTP; break;;
-            "$(m_tr "Back to main menu")") Main_Menu; break;;
-            "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") ${REPLY}";;
+        "$(m_tr "Start")")
+            SL_START
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Stop")")
+            SL_STOP
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Restart")")
+            SL_STOP
+            SL_START
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Join")")
+            SL_JOIN
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Status")")
+            SL_STATUS
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Update")")
+            sleep 2
+            Menu_SLFTP
+            break
+            ;;
+        "$(m_tr "Back to main menu")")
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
         esac
     done
 }
-Menu_FPC () {
+Menu_FPC() {
     banner "Free Pascal Compiler"
     Sent_Debug "[RUN] Menu_FPC"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                       \
-        "$(m_tr "Install")"             \
-        "$(m_tr "Back to main menu")"   \
+    select opt in \
+        "$(m_tr "Install")" \
+        "$(m_tr "Back to main menu")" \
         "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Install")") Missing_FPC; sleep 2; Main_Menu; break;;
-            "$(m_tr "Back to main menu")") Main_Menu; break;;
-            "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") ${REPLY}";;
+        "$(m_tr "Install")")
+            Missing_FPC
+            sleep 2
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Back to main menu")")
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
         esac
     done
 }
-Menu_slTools () {
+Menu_slTools() {
     banner "Menu SL-Tools"
     Sent_Debug "[RUN] Menu_slTools"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                       \
-        "$(m_tr "Config")"              \
-        "$(m_tr "Update")"              \
-        "$(m_tr "Info")"                \
-        "$(m_tr "Uninstall")"           \
-        "$(m_tr "Back to main menu")"   \
+    select opt in \
+        "$(m_tr "Config")" \
+        "$(m_tr "Update")" \
+        "$(m_tr "Info")" \
+        "$(m_tr "Uninstall")" \
+        "$(m_tr "Back to main menu")" \
         "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Config")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Update")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Info")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Uninstall")") echo "soon"; sleep 2; Main_Menu; break;;
-            "$(m_tr "Back to main menu")") Main_Menu; break;;
-            "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") ${REPLY}";;
+        "$(m_tr "Config")")
+            echo "soon"
+            sleep 2
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Update")")
+            echo "soon"
+            sleep 2
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Info")")
+            echo "soon"
+            sleep 2
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Uninstall")")
+            echo "soon"
+            sleep 2
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Back to main menu")")
+            Main_Menu
+            break
+            ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
         esac
     done
     Sent_Debug "[OK] Menu_slTools"
 }
 
-Main_Menu () {
+Main_Menu() {
     banner "Menu main"
     Sent_Debug "[RUN] Main_Menu"
     PS3="$(m_tr "Select the operation"): "
-    select opt in                   \
-        "$(m_tr "Menu SLFTP")"      \
-        "$(m_tr "Menu SL-Tools")"   \
-        "$(m_tr "Menu cbFTP")"      \
+    select opt in \
+        "$(m_tr "Menu SLFTP")" \
+        "$(m_tr "Menu SL-Tools")" \
+        "$(m_tr "Menu cbFTP")" \
         "$(m_tr "Quit")"; do
         case ${opt} in
-            "$(m_tr "Menu SLFTP")") Menu_SLFTP break;;
-            "$(m_tr "Menu SL-Tools")") Menu_slTools break;;
-            "$(m_tr "Menu cbFTP")") Menu_slTools break;;
-            "$(m_tr "Quit")") break;;
-            *) echo "$(m_tr "Invalid option") ${REPLY}";;
+        "$(m_tr "Menu SLFTP")") Menu_SLFTP break ;;
+        "$(m_tr "Menu SL-Tools")") Menu_slTools break ;;
+        "$(m_tr "Menu cbFTP")") Menu_slTools break ;;
+        "$(m_tr "Quit")") break ;;
+        *) echo "$(m_tr "Invalid option") ${REPLY}" ;;
         esac
     done
     Sent_Debug "[OK] Main_Menu"
@@ -204,7 +276,7 @@ Main_Menu () {
 
 # Terminal command
 console_main() {
-   [[ ! -v "${1:-}" ]] && /usr/bin/sltools-core "$@" && exit 
+    [[ ! -v "${1:-}" ]] && /usr/bin/sltools-core "$@" && exit
 }
 
 # run sltools

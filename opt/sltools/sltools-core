@@ -2,18 +2,18 @@
 source /opt/sltools/sltools-functions
 
 SL_STATUS_Internal() {
-    if slftp_is_run; then 
+    if slftp_is_run; then
         Sent_MSG "$(m_tr "slftp is running.")"
     else
         Sent_MSG "$(m_tr "slftp is not running.")"
     fi
 }
 SL_STOP_Internal() {
-    if slftp_is_run; then 
+    if slftp_is_run; then
         Run_AS_User "screen -X -S ${slftp_screen_name} quit"
         if slftp_is_run; then
             Sent_MSG "$(m_tr "slftp did not terminate as expected..")"
-        else 
+        else
             Sent_MSG "$(m_tr "slftp is correctly stopped.")"
         fi
     else
@@ -22,48 +22,54 @@ SL_STOP_Internal() {
 }
 
 SL_JOIN_Internal() {
-    if slftp_is_run; then 
+    if slftp_is_run; then
         Run_AS_User "screen -r ${slftp_screen_name}"
     else
         Sent_MSG "$(m_tr "slftp is not running.")"
     fi
-    
+
 }
 SL_START_Internal() {
     Run_AS_User "${slftp_directory}/${slftp_binary_name}"
-    if [ ${slftp_restart_onfailure} == 1 ]; then 
+    if [ ${slftp_restart_onfailure} == 1 ]; then
         while [ 0 == 0 ]; do
             SL_START_Internal
             [ "${restart_wait}" != "0" ] && sleep "${restart_wait}"
         done
     fi
 }
-console_usage() { 
-  Sent_MSG "Usage: $0 [option(s)] "
-  Sent_MSG " sl-tools command line manipulate"
-  Sent_MSG " The options are:"
-  Sent_MSG "  -v        Show version"
-  Sent_MSG "  start     Start slftp"
-  Sent_MSG "  stop      Stop slftp"
-  Sent_MSG "  join      Joining slftp"
-  Sent_MSG "  status    Show slftp status"
-  Sent_MSG "Report bugs to <${URL_SLTOOLS}/issues>"
-  }
+console_usage() {
+    Sent_MSG "Usage: $0 [option(s)] "
+    Sent_MSG " sl-tools command line manipulate"
+    Sent_MSG " The options are:"
+    Sent_MSG "  -v        Show version"
+    Sent_MSG "  start     Start slftp"
+    Sent_MSG "  stop      Stop slftp"
+    Sent_MSG "  join      Joining slftp"
+    Sent_MSG "  status    Show slftp status"
+    Sent_MSG "Report bugs to <${URL_SLTOOLS}/issues>"
+}
 console_main() {
-    [[ ${1:-} == "" ]] && console_usage && exit;
-    [[ $1 == "start" ]] && SL_START_Internal && exit;
-    [[ $1 == "restart" ]] && SL_STOP_Internal && SL_START_Internal && exit;
-    [[ $1 == "join" ]] && SL_JOIN_Internal && exit;
-    [[ $1 == "stop" ]] && SL_STOP_Internal && exit;
-    [[ $1 == "status" ]] && SL_STATUS_Internal && exit;
-    while getopts ":r:v" options; do 
+    [[ ${1:-} == "" ]] && console_usage && exit
+    [[ $1 == "start" ]] && SL_START_Internal && exit
+    [[ $1 == "restart" ]] && SL_STOP_Internal && SL_START_Internal && exit
+    [[ $1 == "join" ]] && SL_JOIN_Internal && exit
+    [[ $1 == "stop" ]] && SL_STOP_Internal && exit
+    [[ $1 == "status" ]] && SL_STATUS_Internal && exit
+    while getopts ":r:v" options; do
         case "${options}" in
-            v) Sent_MSG "$(m_tr "Sl-Tools, current version V%s. Website: %s" "${VER}" "${URL_SLTOOLS}")"; exit ;;
-            "h") console_usage; exit ;;
-            *) console_usage;;
+        v)
+            Sent_MSG "$(m_tr "Sl-Tools, current version V%s. Website: %s" "${VER}" "${URL_SLTOOLS}")"
+            exit
+            ;;
+        "h")
+            console_usage
+            exit
+            ;;
+        *) console_usage ;;
         esac
     done
-    console_usage && exit;
+    console_usage && exit
 }
 Init
 Init_Files
