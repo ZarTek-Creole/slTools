@@ -44,18 +44,18 @@ SL_START() {
         Sent_Error "012" "$(m_tr "slFTP: Already running.")"
     fi
     Run_AS_User "screen -dmS ${slftp_screen_name} /usr/bin/sltools-core start"
-    ps aux | grep ${unix_user} | grep ${slftp_screen_name}
+    ps aux | grep "${unix_user}" | grep "${slftp_screen_name}"
     exit
 }
 
 SL_INSTALL() {
-    cd ${__dir} || exit
+    cd "${__dir}" || exit
     [ -d "/opt/src/slftp" ] && Sent_Error "013" "$(m_tr "slFTP: Already installed.")"
-    sudo git clone --branch ${slftp_version:-dev} https://gitlab.com/slftp/slftp.git /opt/src/slftp
+    sudo git clone --branch "${slftp_version:-dev}" https://gitlab.com/slftp/slftp.git /opt/src/slftp
     cd /opt/src/slftp || exit
     [[ ! -f "/opt/src/slftp/Makefile" ]] && Sent_Error "010" "$(m_tr "Code source need update for %s." "SLFTP")"
     sudo sed -i "s@SLFTPPATH = ~/slftp@SLFTPPATH = ${slftp_directory}@" /opt/src/slftp/Makefile
-    [ ! -d "${slftp_directory}" ] && sudo mkdir -p "${slftp_directory}" && sudo chown $(whoami) -R "${slftp_directory}"
+    [ ! -d "${slftp_directory}" ] && sudo mkdir -p "${slftp_directory}" && sudo chown "$(whoami)" -R "${slftp_directory}"
     sudo make all_64 || exit
     sudo make install || exit
     cp_file_not_exist /opt/src/slftp/config/slftp.imdbcountries /opt/slftp/
@@ -93,7 +93,7 @@ Missing_SLFTP() {
 }
 
 Install_FPC() {
-    cd ${__dir} || exit
+    cd "${__dir}" || exit
     dl_wget "${FPC_URL_DOWNLOAD}" "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     extract_file "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" /tmp
     cd "/tmp/fpc-${FPC_VERSION}.${FPC_ARCH}" || exit
@@ -290,4 +290,9 @@ Init_Account_Unix
 Check_CurrentUser
 Init_thirds
 
-[[ "${1:-}" == "" ]] && Main_Menu || console_main "$@"
+if [[ "${1:-}" == "" ]]
+then
+  Main_Menu
+else
+  console_main "$@"
+fi

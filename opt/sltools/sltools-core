@@ -31,8 +31,8 @@ SL_JOIN_Internal() {
 }
 SL_START_Internal() {
     Run_AS_User "${slftp_directory}/${slftp_binary_name}"
-    if [ ${slftp_restart_onfailure} == 1 ]; then
-        while [ 0 == 0 ]; do
+    if [ "${slftp_restart_onfailure}" == 1 ]; then
+        while [ "0" == "0" ]; do
             SL_START_Internal
             [ "${restart_wait}" != "0" ] && sleep "${restart_wait}"
         done
@@ -56,7 +56,7 @@ console_main() {
     [[ $1 == "join" ]] && SL_JOIN_Internal && exit
     [[ $1 == "stop" ]] && SL_STOP_Internal && exit
     [[ $1 == "status" ]] && SL_STATUS_Internal && exit
-    while getopts ":r:v" options; do
+    while getopts ":h:v" options; do
         case "${options}" in
         v)
             Sent_MSG "$(m_tr "Sl-Tools, current version V%s. Website: %s" "${VER}" "${URL_SLTOOLS}")"

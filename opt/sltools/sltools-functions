@@ -9,17 +9,17 @@ set -o nounset
 # Set magic variables for current file & dir
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 __file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
-__base="$(basename ${__file} .sh)"
+__base="$(basename "${__file}" .sh)"
 __root="$(cd "$(dirname "${__dir}")" && pwd)"
 
 m_tr() {
-    local MSG=$(printf "$@")
+    local MSG=$(printf "%s" "$@")
     if [ "$(command -v gettext)" != "" ]; then
-        echo "$(gettext sltools "${MSG}")"
+       gettext sltools "${MSG}"
     else
         echo "${MSG}"
     fi
-
+        
 }
 
 banner() {
@@ -37,23 +37,21 @@ banner() {
     echo "
                   Hi $(whoami), Welcome to the sl-Tools v${VER:-current}
     "
-    [[ ! -z "${1:-}" ]] && SubBanner $*
+    [[ -n "${1:-}" ]] && SubBanner "$*"
 }
 
 SubBanner() {
-    echo "....................................................................."
-    display_center "$*"
-    echo "....................................................................."
+  echo "....................................................................."
+  display_center "$*"
+  echo "....................................................................."
 }
 
 display_center() {
     local x
     local y
     text="$*"
-    x=$(((70 - ${#text}) / 2))
-    echo -ne "\E[6n"
-    read -sdR y
-    y=$(echo -ne "${y#*[}" | cut -d';' -f1)
+    x=$(( (70 - ${#text}) / 2))
+    echo -ne "\E[6n";read -sdR y; y=$(echo -ne "${y#*[}" | cut -d';' -f1)
     echo -ne "\033[${y};${x}f$*\n"
 }
 
@@ -65,38 +63,38 @@ ctrl_c() {
 }
 trap close_by_signal SIGINT SIGTERM ERR EXIT
 close_by_signal() {
-    trap - SIGINT SIGTERM ERR EXIT
-    # script cleanup here
+  trap - SIGINT SIGTERM ERR EXIT
+  # script cleanup here
 }
 
-Sent_MSG() {
+Sent_MSG () {
     # Sent_MSG "$msg" $value1 $value2 $value...
     # Sent_MSG 'Hello %s, you are %s years old. You are of %s age.' "Charlie" "19" "legal"
-    printf "[sl-TOOLS] $@"
-    printf "\n"
+    printf  "[sl-TOOLS] $@"
+    printf  "\n"
 }
 
 Sent_Error() {
     local ERR_CODE="$1"
     shift
     local ERR_MSG="$@ \n[ERR_${ERR_CODE}] $(m_tr "For more information visit: %s" "${URL_SLTOOLS}/wiki/error_${ERR_CODE}")"
-    Sent_MSG "${ERR_MSG}"
-    if [ "${LOG}" = 1 ]; then Sent_MSG "[$(date)] [ERROR] ${ERR_MSG}" >>"${FILE_LOG}"; fi
+    Sent_MSG  "${ERR_MSG}"
+    if [ "${LOG}" = 1 ]; then Sent_MSG "[$(date)] [ERROR] ${ERR_MSG}" >> "${FILE_LOG}"; fi
     exit 0
 }
 
 Sent_Debug() {
     if [ "${DEBUG}" = 1 ]; then Sent_MSG "[DEBUG] $@" && sleep 0.2; fi
-    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >>"${FILE_LOG}"; fi
+    if [ "$LOG" = 1 ]; then Sent_MSG "[$(date)] [ERROR] $*" >> "${FILE_LOG}"; fi
 }
 
 Init() {
-    URL_SLTOOLS="https://github.com/ZarTek-Creole/slTools"
-    URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
-    URL_SITE_FPC="https://www.freepascal.org"
-    FPC_VERSION="3.2.2"
+    export URL_SLTOOLS="https://github.com/ZarTek-Creole/slTools"
+    export URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
+    export URL_SITE_FPC="https://www.freepascal.org"
+    export FPC_VERSION="3.2.2"
     FPC_ARCH="x86_64-linux"
-    FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
+    export FPC_URL_DOWNLOAD="https://downloads.sourceforge.net/project/freepascal/Linux/${FPC_VERSION}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar"
     BINS_NEEDED="echo printf grep cut tr tar touch su screen sudo gettext git make tar wget ld"
     DEB_PKG_NEED="sudo make binutils zlib1g-dev libncurses-dev libsqlite3-dev libssl-dev gettext screen"
     ALPINE_PKG_NEED="sudo make binutils zlib-dev ncurses-dev sqlite-dev libressl-dev gettext screen"
@@ -112,10 +110,10 @@ is_super_rigths() {
 Init_Files() {
     if [ ! -f "${FILE_CONF}" ]; then
         [[ $(is_user_root) -eq 0 ]] && [[ $(is_user_sudo) -eq 0 ]] && Sent_Error "001" "$(m_tr "A command requires higher rights such as root or sudo to continue. Start again with higher rights..")"
-        Sent_MSG $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..." "${FILE_CONF}")
+        Sent_MSG $(m_tr "(Err_004) The following SL-Tools file is missing: '%s'. Creating the file ..." "${FILE_CONF}") 
         mkdir -p "$(dirname "${FILE_CONF}")"
         touch "${FILE_CONF}"
-    fi
+    fi 
     source "${FILE_CONF}"
     # Efface les anciens logs ...
     #[ -f "$FILE_LOG" ] && sudo rm "$FILE_LOG" && sudo touch "$FILE_LOG" && sudo chmod 0666 "$FILE_LOG"
@@ -129,11 +127,11 @@ Init_Packages() {
         local PKG_LIST="${ALPINE_PKG_NEED}"
     elif [[ "$_OSFOUND" == "DEBIAN" ]]; then
         local PKG_LIST="${DEB_PKG_NEED}"
-    else
+    else 
         local PKG_LIST="${DEB_PKG_NEED}"
     fi
     for PKG in ${PKG_LIST}; do
-        if isPackage_Installed ${PKG}; then
+        if isPackage_Installed "${PKG}"; then
             Sent_Debug "[+] FOUND: ${PKG}"
         else
             Sent_Debug "[-] NOT FOUND: ${PKG}"
@@ -141,7 +139,7 @@ Init_Packages() {
         fi
     done
     if [ -n "${PACKAGES_MISSING}" ]; then
-        Sent_Error "011" "$(m_tr "Some mandatory packages are missing: %s" "sudo ${_PKGCMD}${PACKAGES_MISSING}")"
+        Sent_Error "011" "$(m_tr "Some mandatory packages are missing: %s" "sudo ${_PKGCMD}${PACKAGES_MISSING}")" 
 
     fi
 }
@@ -154,7 +152,7 @@ Init_thirds() {
     fi
     if [[ "$(command -v "${slftp_binary_name}")" == "" ]] && [[ $(readlink -f -- "${slftp_directory}"/"${slftp_binary_name}") == "" ]]; then
         banner "SLFTP"
-        Sent_MSG "$(m_tr "%s is missing." "${slftp_binary_name}")"
+        Sent_MSG "$(m_tr "%s is missing." "${slftp_binary_name}")" 
         printf '\n'
         Missing_SLFTP
     fi
@@ -164,7 +162,7 @@ Init_Binary() {
     Sent_Debug "[RUN] Init_Binary"
     # check for needed bins
     for BIN in ${BINS_NEEDED[*]}; do
-        if isCommand_Exist ${BIN}; then
+        if isCommand_Exist "${BIN}"; then
             Sent_Debug "[+] FOUND: ${BIN}"
         else
             Sent_Debug "[-] NOT FOUND: ${BIN}"
@@ -172,29 +170,29 @@ Init_Binary() {
         fi
     done
     if [ -n "${BINS_MISSING}" ]; then
-        Sent_Error "002" "$(m_tr "Some mandatory utilities are missing:%s." "${BINS_MISSING}")"
+        Sent_Error "002" "$(m_tr "Some mandatory utilities are missing:%s." "${BINS_MISSING}")" 
 
     fi
     Sent_Debug "[OK] Init_Binary"
 }
 
-is_user_root() {
+is_user_root () { 
     [ "${EUID:-$(id -u)}" -eq 0 ] && return 0 || return 1
 }
 
-is_user_sudo() {
+is_user_sudo () { 
     sudo -v >/dev/null 2>&1
     [ $? ] && return 1 || return 0
 }
 
-is_run_sudo() {
+is_run_sudo () { 
     [[ "${SUDO_USER:-}" = "" ]] && return 0 || return 1
 }
 
 Init_Config() {
     Sent_Debug "[RUN] config"
-    [ ! -f ${FILE_CONF_DEF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF_DEF}") && touch "${FILE_CONF_DEF}" && chmod 0666 "${FILE_CONF_DEF}"
-    [ ! -f ${FILE_CONF} ] && Sent_MSG $(m_tr "Creating file %s" "${FILE_CONF}") && touch "${FILE_CONF}" && chmod 0666 "${FILE_CONF}"
+    [ ! -f ${FILE_CONF_DEF} ] && Sent_MSG "$(m_tr "Creating file %s" "${FILE_CONF_DEF}")" && touch "${FILE_CONF_DEF}" && chmod 0666 "${FILE_CONF_DEF}"
+    [ ! -f ${FILE_CONF} ] && Sent_MSG "$(m_tr "Creating file %s" "${FILE_CONF}")" && touch "${FILE_CONF}" && chmod 0666 "${FILE_CONF}"
     Config_Check_Value "DEBUG"
     Config_Check_Value "LOG"
     Config_Check_Value "slftp_binary_name"
@@ -213,41 +211,38 @@ Init_Config() {
 Config_Set_Value() {
     Sent_Debug "[RUN] Config_Set_Value $*"
     if [[ -f "${FILE_CONF}" && "$(grep -c -w "$1=" ${FILE_CONF})" = 1 ]]; then
-        local value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
+	    local value=$(grep -w "$1" ${FILE_CONF} | cut -d "=" -f2 | tr -d "\"")
     else
         local value_default=$(grep -w "$1=" ${FILE_CONF_DEF} | head -1 | cut -d "=" -f2 | tr -d "\"")
-        Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ].... : " "$1" "${value_default}")"
-        read -r value
-        [ "$value" = "" ] && value=${value_default}
+        Sent_MSG "$(m_tr "Please enter the value for %s, default [ %s ] : " "$1" "${value_default}")"; read -r value
+    	[ "$value" = "" ] && value=${value_default}
     fi
-    [ "$(grep -c -w "$1=" ${FILE_CONF})" = 0 ] && echo "$1"=\""$value"\" >>${FILE_CONF}
+    [ "$(grep -c -w "$1=" ${FILE_CONF} )" = 0 ] && echo "$1"=\""$value"\" >> ${FILE_CONF}
     Sent_Debug "[OK] Config_Set_Value $*"
 }
 
 Config_Check_Value() {
     Sent_Debug "[RUN] Config_Check_Value $*"
     # test comment
-    [[ ! -v "$1" ]] && Sent_MSG "$(m_tr "The configuration of '%s=Value' is missing in %s" "$1" "${FILE_CONF}")" && Config_Set_Value "$1"
+    [[ ! -v "$1" ]] && Sent_MSG "$(m_tr "The configuration of '%s=Value' is missing in %s" "$1" "${FILE_CONF}")" && Config_Set_Value "$1" 
     Sent_Debug "[OK] Config_Check_Value $*"
 }
 
 Init_Account_Unix() {
-    if Unix_Group_Exists "${unix_group}"; then
-        Sent_MSG "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :" "${unix_group}")"
-        read -r create_group
+    if Unix_Group_Exists "${unix_group}"; then 
+        Sent_MSG "$(m_tr "The unix group '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :" "${unix_group}")"; read -r create_group
         case ${create_group} in
-        [YyoO]) Unix_Group_Create ;;
-        [Nn]) exit 1 ;;
-        *) Unix_Group_Create ;;
+            [YyoO]) Unix_Group_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_Group_Create;;
         esac
     fi
-    if Unix_User_Exists "${unix_user}"; then
-        Sent_MSG "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :" "${unix_user}")"
-        read -r create_user
+    if Unix_User_Exists "${unix_user}"; then 
+        Sent_MSG "$(m_tr "The unix user '%s' does not exist, do you want to create it? [Y]es [N]o, default Y :" "${unix_user}")"; read -r create_user
         case ${create_user} in
-        [YyoO]) Unix_User_Create ;;
-        [Nn]) exit 1 ;;
-        *) Unix_User_Create ;;
+            [YyoO]) Unix_User_Create;;
+            [Nn]) exit 1 ;;
+            *) Unix_User_Create;;
         esac
     fi
 }
@@ -282,14 +277,14 @@ Run_AS_User() {
         sudo -H -u "${unix_user}" bash -c '$@'
     else
         Sent_MSG "$(m_tr "Run '%s' as user '%s'" "$*" "$(whoami)")"
-        $@
+        "$@"
     fi
 }
 slftp_is_run() {
     if [[ "$(Run_AS_User screen -ls)" = *${slftp_screen_name}* ]]; then
         return 1
     else
-        return 0
+       return 0
     fi
 }
 OS_Detect() {
@@ -308,14 +303,14 @@ OS_Detect() {
     fi
 }
 isCommand_Exist() {
-    type $1 >/dev/null 2>&1 && return 0 || return 1
+    type "$1" >/dev/null 2>&1 && return 0 || return 1
 }
 isPackage_Installed() {
     if [[ "$_OSFOUND" == "ALPINE" ]]; then
-        if apk -e info "$1" &>/dev/null; then return 0; else return 1; fi
+        if apk -e info "$1" &> /dev/null; then return 0; else return 1; fi
     elif [[ "$_OSFOUND" == "DEBIAN" ]]; then
         if dpkg-query -W -f'${Status}' "${1}" 2>/dev/null | grep -q "ok installed"; then return 0; else return 1; fi
-    else
+    else 
         return 1
     fi
 }
