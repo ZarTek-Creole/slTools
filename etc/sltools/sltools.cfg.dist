@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-###
-#
-# SL-Tools (slFTP Tools) Edition community
-#
-# Author:               ZarTeK (ZarTeK.Creole@gmail.com)
-# Website:              https://github.com/ZarTek-Creole/slTools
-# Bugs,idea,sugestion : https://github.com/ZarTek-Creole/slTools/issues/new
-#
+
+##========================================================================================
+##                                                                                      ##
+##                       SL-Tools (slFTP Tools) Edition community
 ##
+##                Author:               ZarTeK (ZarTeK.Creole@gmail.com)
+##            Website:              https://github.com/ZarTek-Creole/slTools
+##       Bugs,idea,sugestion : https://github.com/ZarTek-Creole/slTools/issues/new
+##                                                                                      ##
+##========================================================================================
 
 # Activer le mode DEBUG
 DEBUG="0"
@@ -17,7 +18,7 @@ LOG="0"
 
 # Nom du fichier slftp (laisser par défaut)
 slftp_binary_name="slftp"
- 
+
 # Nom du screen sous lequel slftp sera lancé
 slftp_screen_name="slFTPScr"
 
