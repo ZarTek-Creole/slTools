@@ -17,15 +17,18 @@
     - [Packages](#packages)
     - [Binaires](#binaires)
   - [Téléchargements](#téléchargements)
+    - [Git](#git)
+    - [wget](#wget)
   - [Installation](#installation)
   - [Fichier de configuration](#fichier-de-configuration)
-  - [Mode Intéractif](#mode-intreractif)
+  - [Mode Intéractif](#mode-intéractif)
     - [Les menus](#les-menus)
       - [Menu main](#menu-main)
       - [Menu slFTP](#menu-slftp)
       - [Menu slTools](#menu-sltools)
-  - [Mode Non-Intéractif](#mode-non-intreractif)
+  - [Mode Non-Intéractif](#mode-non-intéractif)
 - [Vos besoins, suggestions, bugs:](#vos-besoins-suggestions-bugs)
+- [Wiki](#wiki)
  
 # SL-Tools
 ## Quelques points
@@ -33,7 +36,7 @@
 * Un mode interative
 * Un mode en ligne de commande (terminal)
 * Installation automatique de FPC (Free Pascal Free)
-* Installation (semi) automatique de slFTP
+* Installation automatique de slFTP
 * Gestion sous screen des instances slFTP
 ## Testé avec
   * Debian GNU/Linux 11 (bullseye)
@@ -46,22 +49,37 @@
 * sudo
 * gettext
 ### Binaires
-* [Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/usr/bin/sltools#L73)
+* [Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L98)
+* [Liste des packages Debian/Ubuntu](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L99)
+* [Liste des packages Alpine](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L100)
 ## Téléchargements
+### Git
 ```
 git clone https://github.com/ZarTek-Creole/slTools.git
+cd sltools
+```
+### wget
+```
+wget https://github.com/ZarTek-Creole/slTools/archive/refs/heads/master.zip -O sltools.zip
+unzip sltools.zip
+cd sltools
 ```
 ## Installation
 ```
-└> sudo ./install.sh                                             
-*-----------------------------------------*
-* SL-Tools a été installé                 *
-* le répertoire de configuration se       *
-* trouve dans /etc/slftp et doit être     *
-* renommé en sltools.cfg                  *
-* Après vous pouvez éxécuter le programme *
-* Avec la commande sltools (root/user)    *
-*-----------------------------------------*
+
+└> sudo ./install.sh 
+Installing SL-Tools
+SL-Tools create default config file
+SL-Tools Create Symbolic Links
+SL-Tools initialisation log file
+SL-Tools install pack languages
+Install language: de
+Install language: es
+Install language: fr
+Install language: nl
+Install language: pl
+SL-Tools Successful installation
+done.
 ```
 ## Fichier de configuration
 ```
