@@ -49,18 +49,18 @@
 * sudo
 * gettext
 ### Binaires
-* [Liste des binaires](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L98)
-* [Liste des packages Debian/Ubuntu](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L99)
-* [Liste des packages Alpine](https://github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L100)
+* [Liste des binaires](github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L98)
+* [Liste des packages Debian/Ubuntu](github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L99)
+* [Liste des packages Alpine](github.com/ZarTek-Creole/slTools/blob/master/opt/sltools/sltools-functions#L100)
 ## Téléchargements
 ### Git
 ```
-git clone https://github.com/ZarTek-Creole/slTools.git
+git clone github.com/ZarTek-Creole/slTools.git
 cd sltools
 ```
 ### wget
 ```
-wget https://github.com/ZarTek-Creole/slTools/archive/refs/heads/master.zip -O sltools.zip
+wget github.com/ZarTek-Creole/slTools/archive/refs/heads/master.zip -O sltools.zip
 unzip sltools.zip
 cd sltools
 ```
@@ -136,10 +136,10 @@ Vous pouvez éxécuter sltools depuis n'importe quel dossier et utilisateur
 N’hesitez pas à participer au projet, il n'est pas obligatoire de savoir développer.
 Si vous rapportez des bugs, donnez des idées d'amélioration vous aidez déjà le projet.
 Besoin d'aide ? Posez vos questions c'est également participer au projet.
-[Et c'est par ici :-)](https://github.com/ZarTek-Creole/slTools/issues/new)
+[Et c'est par ici :-)](github.com/ZarTek-Creole/slTools/issues/new)
 
 # Wiki
-[Vous pouvez trouver certaines reponses sur notre wiki](https://github.com/ZarTek-Creole/slTools/wiki)
+[Vous pouvez trouver certaines reponses sur notre wiki](github.com/ZarTek-Creole/slTools/wiki)
 
 
 

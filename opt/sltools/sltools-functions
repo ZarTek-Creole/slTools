@@ -89,7 +89,7 @@ Sent_Debug() {
 }
 
 Init() {
-    export URL_SLTOOLS="https://github.com/ZarTek-Creole/slTools"
+    export URL_SLTOOLS="github.com/ZarTek-Creole/slTools"
     export URL_SITE_SLFTP="https://gitlab.com/slftp/slftp"
     export URL_SITE_FPC="https://www.freepascal.org"
     export FPC_VERSION="3.2.2"
